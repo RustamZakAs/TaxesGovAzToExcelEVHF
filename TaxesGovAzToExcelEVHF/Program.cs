@@ -1,6 +1,7 @@
 ﻿using ExportToExcel;
 using HtmlAgilityPack;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -14,28 +15,6 @@ namespace TaxesGovAzToExcelEVHF
 {
     public class EVHF
     {
-        public EVHF(string iO, string voen, string ad, string tip, string veziyyet, string tarix, string seriya, string nomre, string esasQeyd, string elaveQeyd, string eDVsiz, string eDV, string hesab1C, string mVQeyd)
-        {
-            IO = iO;
-            Voen = voen;
-            Ad = ad;
-            Tip = tip;
-            Veziyyet = veziyyet;
-            Tarix = tarix;
-            Seriya = seriya;
-            Nomre = nomre;
-            EsasQeyd = esasQeyd;
-            ElaveQeyd = elaveQeyd;
-            EDVsiz = eDVsiz;
-            EDV = eDV;
-            Hesab1C = hesab1C;
-            MVQeyd = mVQeyd;
-        }
-        public EVHF()
-        {
-
-        }
-
         public string IO { get; set; }
         public string Voen { get; set; }
         public string Ad { get; set; }
@@ -56,7 +35,7 @@ namespace TaxesGovAzToExcelEVHF
             return $"{IO}-{Voen}-{Ad}-{Tip}-{Veziyyet}-{Tarix}-{Seriya}-{Nomre}-{EsasQeyd}-{ElaveQeyd}-{EDVsiz}-{EDV}-{Hesab1C}-{MVQeyd}";
         }
 
-        public List<EVHF> RZLoadEVHF(string link)
+        public static List<EVHF> RZLoadEVHF(string link)
         {
 /*
             // The HtmlWeb class is a utility class to get the HTML over HTTP
@@ -124,56 +103,59 @@ namespace TaxesGovAzToExcelEVHF
             newTempDoc = newTempDoc.Replace("Г§", "ç");
             newTempDoc = newTempDoc.Replace("Ећ", "Ş");
             newTempDoc = newTempDoc.Replace("Еџ", "ş");
-//            newTempDoc = newTempDoc.Replace("&nbsp;", "");
+            //newTempDoc = newTempDoc.Replace("&nbsp;", "");
 
             newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
             newTempDoc = newTempDoc.Replace("<HTML>", "");
-            //newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv="Content - Type" content="text / html; charset = utf - 8" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
+            newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
             newTempDoc = newTempDoc.Replace("<BODY>  <b> Axtarış şərtləri :<b>", "");
-            //newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:21.05.2018-dən 21.05.2018-dək </i>", "");
+            newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
             newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
 
             // From Web
-            //var url = "http://html-agility-pack.net/";
+            //var url = @"http://html-agility-pack.net/";
             //var web = new HtmlWeb();
             //var doc3 = web.Load(url);
+            
+            return StringToListEVHF(newTempDoc);
+        }
+        public static List<EVHF> StringToListEVHF(string str)
+        {
+            //List<EVHF> RZEVHFList = new List<EVHF>();
 
-            List<EVHF> RZEVHFList = new List<EVHF>();
-            EVHF RZEVHF = new EVHF();
+            var RZEVHFList = new List<EVHF>();
+            var RZEVHF = new EVHF();
 
-            string TextForBegin = "\">&nbsp;";
-
-            int ListIndex = 0;
             int j = 0, k = 0, count = 0;
-            for (int i = 0; i < newTempDoc.Length; i++)
+            for (int i = 0; i < str.Length; i++)
             {
                 string tempDocx = "";
-                for (; j < TextForBegin.Length; j++)
+                for (; j < MainEVHF.TextForBegin.Length; j++)
                 {
-                    tempDocx += newTempDoc[(i+j) >= newTempDoc.Length-1 ? 
-                        newTempDoc.Length-1 : (i+j)];
+                    tempDocx += str[(i + j) >= str.Length - 1 ?
+                        str.Length - 1 : (i + j)];
                 }
-//                Console.WriteLine(tempDocx);
-                if (tempDocx == TextForBegin)
+                if (tempDocx == MainEVHF.TextForBegin)
                 {
                     count++;
                     string Xvalue = "";
                     int tempIndex = 0;
                     do
                     {
-                        tempIndex = (i + j + k) >= newTempDoc.Length - 1 ?
-                            newTempDoc.Length - 1 : (i + j + k);
-                        Xvalue += newTempDoc[tempIndex];
+                        tempIndex = (i + j + k) >= str.Length - 1 ?
+                            str.Length - 1 : (i + j + k);
+                        Xvalue += str[tempIndex];
                         k++;
-                    } while (newTempDoc[tempIndex] != '<');
+                    } while (str[tempIndex] != '<');
                     Xvalue = Xvalue.Replace("<", "");
                     tempIndex = 0;
                     k = 0;
-                    i = (i + j + k + Xvalue.Length) >= newTempDoc.Length-1 ? 
-                        newTempDoc.Length-1 : (i + j + k + Xvalue.Length);
-                    if (count == 1) {
+                    i = (i + j + k + Xvalue.Length) >= str.Length - 1 ?
+                        str.Length - 1 : (i + j + k + Xvalue.Length);
+                    if (count == 1)
+                    {
+                        RZEVHF.IO = MainEVHF.EVHFIO;
                         RZEVHF.Voen = Xvalue;
-                        RZEVHF.IO = Program.EVHFIO;
                     }
                     if (count == 2) RZEVHF.Ad = Xvalue;
                     if (count == 3) RZEVHF.Tip = Xvalue;
@@ -183,11 +165,19 @@ namespace TaxesGovAzToExcelEVHF
                     if (count == 7) RZEVHF.Nomre = Xvalue;
                     if (count == 8) RZEVHF.EsasQeyd = Xvalue;
                     if (count == 9) RZEVHF.ElaveQeyd = Xvalue;
-                    if (count == 10) RZEVHF.EDVsiz = Xvalue;
+                    if (count == 10)
+                    {
+                        //Xvalue = Xvalue.Replace(".", ",");
+                        //RZEVHF.EDVsiz = decimal.Parse(Xvalue);
+                        RZEVHF.EDVsiz = Xvalue;
+                    }
                     if (count == 11)
                     {
+                        //Xvalue = Xvalue.Replace(".", ",");
+                        //RZEVHF.EDV = decimal.Parse(Xvalue);
                         RZEVHF.EDV = Xvalue;
-                        //Console.WriteLine(RZEVHF.ToString());
+                        RZEVHF.Hesab1C = "531.1";
+                        Console.WriteLine(RZEVHF.ToString());
                         RZEVHFList.Add(RZEVHF);
                         count = 0;
                     }
@@ -196,7 +186,7 @@ namespace TaxesGovAzToExcelEVHF
             }
             return RZEVHFList;
         }
-        public static void btnCreateExcel_Click(ref List<EVHF> EVHFs)
+        public static void CreateExcel(ref List<EVHF> EVHFs)
         {
 //#if DEBUG
             //  We'll attempt to create our example .XLSX file in our "My Documents" folder
@@ -232,8 +222,10 @@ namespace TaxesGovAzToExcelEVHF
             }
 
             //  Step 3:  Let's open our new Excel file and shut down this application.
-            Process p = new Process();
-            p.StartInfo = new ProcessStartInfo(TargetFilename);
+            Process p = new Process
+            {
+                StartInfo = new ProcessStartInfo(TargetFilename)
+            };
             p.Start();
 
             //this.Close();
@@ -260,32 +252,34 @@ namespace TaxesGovAzToExcelEVHF
             dt0.Columns.Add("Əlavə qeyd", Type.GetType("System.String"));
             dt0.Columns.Add("Malın ƏDV-siz ümumi dəyəri", Type.GetType("System.String"));
             dt0.Columns.Add("Malın ƏDV məbləği", Type.GetType("System.String"));
+            dt0.Columns.Add("1C", Type.GetType("System.String"));
+            dt0.Columns.Add("Malverən qeyd", Type.GetType("System.String"));
 
-            //foreach (var i in EVHFs)
-            //{
-            //    dt1.Rows.Add(new object[] { "I", i.Voen, i.Ad, i.Tip, i.Veziyyet, i.Tarix, i.Seriya, i.Nomre, i.EsasQeyd, i.ElaveQeyd, i.EDVsiz, i.EDV});
-            //}
-            for (int i = 0; i < EVHFs.Count; i++)
+            foreach (var i in EVHFs)
             {
-                dt0.Rows.Add(new object[] { "I", EVHFs[i].Voen,
-                                                 EVHFs[i].Ad,
-                                                 EVHFs[i].Tip,
-                                                 EVHFs[i].Veziyyet,
-                                                 EVHFs[i].Tarix,
-                                                 EVHFs[i].Seriya,
-                                                 EVHFs[i].Nomre,
-                                                 EVHFs[i].EsasQeyd,
-                                                 EVHFs[i].ElaveQeyd,
-                                                 EVHFs[i].EDVsiz,
-                                                 EVHFs[i].EDV });
-                //ds0.Tables.Add(dt0);
+                dt0.Rows.Add(new object[] { "I", i.Voen, i.Ad, i.Tip, i.Veziyyet, i.Tarix, i.Seriya, i.Nomre, i.EsasQeyd, i.ElaveQeyd, i.EDVsiz, i.EDV, i.Hesab1C, i.MVQeyd });
             }
-            //ds0.Tables.Add(CreateExcelFile.ListToDataTable(EVHFs));
+            //for (int i = 0; i < EVHFs.Count; i++)
+            //{
+            //    dt0.Rows.Add(new object[] { "I", EVHFs[i].Voen,
+            //                                     EVHFs[i].Ad,
+            //                                     EVHFs[i].Tip,
+            //                                     EVHFs[i].Veziyyet,
+            //                                     EVHFs[i].Tarix,
+            //                                     EVHFs[i].Seriya,
+            //                                     EVHFs[i].Nomre,
+            //                                     EVHFs[i].EsasQeyd,
+            //                                     EVHFs[i].ElaveQeyd,
+            //                                     EVHFs[i].EDVsiz,
+            //                                     EVHFs[i].EDV,
+            //                                     EVHFs[i].Hesab1C,
+            //                                     EVHFs[i].MVQeyd});
+            //}
             ds0.Tables.Add(dt0);
             return ds0;
         }
     }
-    class Program
+    class MainEVHF
     {
         private static string myIO;
         public static string EVHFIO
@@ -293,11 +287,19 @@ namespace TaxesGovAzToExcelEVHF
             get { return myIO = "I"; }
             set { myIO = value; }
         }
-
-        static void Main(string[] args)
+        private static string textForBegin;
+        public static string TextForBegin
+        {
+            get { return textForBegin = "&nbsp;"; }
+            set { textForBegin = value; }
+        }
+        public static string EVHFsLink { get; set; }
+        public static void MainMenyu ()
         {
             Console.WriteLine("Pleese inser Link");
-            string link = "https://vroom.e-taxes.gov.az/index/index/" +
+            string link;
+            link = Console.ReadLine();
+            link = //@"https://vroom.e-taxes.gov.az/index/index/" +
                 "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE=" +
                 "&w=2" +
                 "&v=" +
@@ -307,14 +309,42 @@ namespace TaxesGovAzToExcelEVHF
                 "&sw=0" +
                 "&r=1" +
                 "&sv=1501069851";
-            //link = Console.ReadLine();
+            string XToken = "";
+            for (int i = 0; i < link.Length; i++)
+            {
+                if (i < link.Length-5)
+                {
+                    string Xtemp = "";
+                    Xtemp += link[i + 0];
+                    Xtemp += link[i + 1];
+                    Xtemp += link[i + 2];
+                    Xtemp += link[i + 3];
+                    if (Xtemp == "tkn=")
+                    {
+                        int x = 0, xlen = 0;
+                        do
+                        {
+                            xlen = i + Xtemp.Length + x++;
+                            XToken += link[xlen];
+                            //Console.WriteLine(XToken);
+                        } while (link[xlen] != '=');
+                        XToken = XToken.Remove(XToken.Length - 1,1);
+                    }
+                }
+            }
+            Console.WriteLine(XToken);
             link = @"C:\text.html";
-            
-            List<EVHF> EVHFs = new List<EVHF>();
-            EVHF eVHF = new EVHF();
-            EVHFs = eVHF.RZLoadEVHF(link);
-            //EVHFs.Add();
-            EVHF.btnCreateExcel_Click(ref EVHFs);
+
+
+
+            EVHFsLink = link;
+        }
+        public static void Main(string[] args)
+        {
+            MainMenyu();
+
+            List<EVHF> EVHFlist = EVHF.RZLoadEVHF(EVHFsLink);
+            EVHF.CreateExcel(ref EVHFlist);
             Console.ReadKey();
         }
     }
