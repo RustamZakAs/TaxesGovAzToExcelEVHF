@@ -230,8 +230,8 @@ namespace ExportToExcel
         /// <summary>
         /// Create an Excel file, and write it to a file.
         /// </summary>
-        /// <param name="ds">DataSet containing the data to be written to the Excel.</param>
-        /// <param name="excelFilename">Name of file to be written.</param>
+        /// <param name = "ds" > DataSet containing the data to be written to the Excel.</param>
+        /// <param name = "excelFilename" > Name of file to be written.</param>
         /// <returns>True if successful, false if something went wrong.</returns>
         public static bool CreateExcelDocument(DataSet ds, string excelFilename)
         {
@@ -250,7 +250,6 @@ namespace ExportToExcel
                 return false;
             }
         }
-
 
         private static void WriteExcelFile(DataSet ds, SpreadsheetDocument spreadsheet)
         {

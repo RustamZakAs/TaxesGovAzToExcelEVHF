@@ -14,6 +14,28 @@ namespace TaxesGovAzToExcelEVHF
 {
     public class EVHF
     {
+        public EVHF(string iO, string voen, string ad, string tip, string veziyyet, string tarix, string seriya, string nomre, string esasQeyd, string elaveQeyd, string eDVsiz, string eDV, string hesab1C, string mVQeyd)
+        {
+            IO = iO;
+            Voen = voen;
+            Ad = ad;
+            Tip = tip;
+            Veziyyet = veziyyet;
+            Tarix = tarix;
+            Seriya = seriya;
+            Nomre = nomre;
+            EsasQeyd = esasQeyd;
+            ElaveQeyd = elaveQeyd;
+            EDVsiz = eDVsiz;
+            EDV = eDV;
+            Hesab1C = hesab1C;
+            MVQeyd = mVQeyd;
+        }
+        public EVHF()
+        {
+
+        }
+
         public string IO { get; set; }
         public string Voen { get; set; }
         public string Ad { get; set; }
@@ -34,11 +56,8 @@ namespace TaxesGovAzToExcelEVHF
             return $"{IO}-{Voen}-{Ad}-{Tip}-{Veziyyet}-{Tarix}-{Seriya}-{Nomre}-{EsasQeyd}-{ElaveQeyd}-{EDVsiz}-{EDV}-{Hesab1C}-{MVQeyd}";
         }
 
-        public static List<EVHF> RZLoadEVHF(string link)
+        public List<EVHF> RZLoadEVHF(string link)
         {
-            var RZEVHFList = new List<EVHF>();
-            var RZEVHF = new EVHF();
-
 /*
             // The HtmlWeb class is a utility class to get the HTML over HTTP
             HtmlWeb htmlWeb = new HtmlWeb();
@@ -86,7 +105,6 @@ namespace TaxesGovAzToExcelEVHF
             Console.WriteLine(link);
             doc1.Load(link);
             
-
             // From String
             //var doc2 = new HtmlDocument();
             //doc2.LoadHtml(link);
@@ -115,34 +133,48 @@ namespace TaxesGovAzToExcelEVHF
             //newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:21.05.2018-dən 21.05.2018-dək </i>", "");
             newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
 
-
-
             // From Web
             //var url = "http://html-agility-pack.net/";
             //var web = new HtmlWeb();
             //var doc3 = web.Load(url);
+
+            List<EVHF> RZEVHFList = new List<EVHF>();
+            EVHF RZEVHF = new EVHF();
+
+            string TextForBegin = "\">&nbsp;";
+
+            int ListIndex = 0;
             int j = 0, k = 0, count = 0;
             for (int i = 0; i < newTempDoc.Length; i++)
             {
                 string tempDocx = "";
-                for (; j < 6; j++)
+                for (; j < TextForBegin.Length; j++)
                 {
-                    tempDocx += newTempDoc[(i+j) >= newTempDoc.Length-1 ? newTempDoc.Length-1 : (i+j)];
+                    tempDocx += newTempDoc[(i+j) >= newTempDoc.Length-1 ? 
+                        newTempDoc.Length-1 : (i+j)];
                 }
 //                Console.WriteLine(tempDocx);
-                if (tempDocx == "&nbsp;")
+                if (tempDocx == TextForBegin)
                 {
                     count++;
                     string Xvalue = "";
+                    int tempIndex = 0;
                     do
                     {
-                        Xvalue += newTempDoc[(i + j + k) >= newTempDoc.Length-1 ? newTempDoc.Length-1 : (i + j + k)];
+                        tempIndex = (i + j + k) >= newTempDoc.Length - 1 ?
+                            newTempDoc.Length - 1 : (i + j + k);
+                        Xvalue += newTempDoc[tempIndex];
                         k++;
-                    } while (newTempDoc[(i + j + k) >= newTempDoc.Length-1 ? newTempDoc.Length-1 : (i + j + k)] != '<');
+                    } while (newTempDoc[tempIndex] != '<');
+                    Xvalue = Xvalue.Replace("<", "");
+                    tempIndex = 0;
                     k = 0;
-                    //i = i + j + k + Xvalue.Length;
-                    i = (i + j + k + Xvalue.Length) >= newTempDoc.Length-1 ? newTempDoc.Length-1 : (i + j + k + Xvalue.Length);
-                    if (count == 1) RZEVHF.Voen = Xvalue;
+                    i = (i + j + k + Xvalue.Length) >= newTempDoc.Length-1 ? 
+                        newTempDoc.Length-1 : (i + j + k + Xvalue.Length);
+                    if (count == 1) {
+                        RZEVHF.Voen = Xvalue;
+                        RZEVHF.IO = Program.EVHFIO;
+                    }
                     if (count == 2) RZEVHF.Ad = Xvalue;
                     if (count == 3) RZEVHF.Tip = Xvalue;
                     if (count == 4) RZEVHF.Veziyyet = Xvalue;
@@ -155,24 +187,10 @@ namespace TaxesGovAzToExcelEVHF
                     if (count == 11)
                     {
                         RZEVHF.EDV = Xvalue;
-                        Console.WriteLine(RZEVHF.ToString());
-                        count = 0;
+                        //Console.WriteLine(RZEVHF.ToString());
                         RZEVHFList.Add(RZEVHF);
+                        count = 0;
                     }
-                    //public string IO { get; set; }
-                    //public string Voen { get; set; }
-                    //public string Ad { get; set; }
-                    //public string Tip { get; set; }
-                    //public string Veziyyet { get; set; }
-                    //public string Tarix { get; set; }
-                    //public string Seriya { get; set; }
-                    //public string Nomre { get; set; }
-                    //public string EsasQeyd { get; set; }
-                    //public string ElaveQeyd { get; set; }
-                    //public string EDVsiz { get; set; }
-                    //public string EDV { get; set; }
-                    //public string Hesab1C { get; set; }
-                    //public string MVQeyd { get; set; }
                 }
                 j = 0;
             }
@@ -224,26 +242,24 @@ namespace TaxesGovAzToExcelEVHF
         {
             //  Create a sample DataSet, containing three DataTables.
             //  (Later, this will save to Excel as three Excel worksheets.)
-            //
-            DataSet ds = new DataSet();
+            DataSet ds0 = new DataSet();
             //  Create the first table of sample data
-            DataTable dt1 = new DataTable("Drivers");
+            DataTable dt0 = new DataTable("EVHF");
+            //dt0.Rows.Add(new object[] { "EVHF siyahısı" });
+            //dt0.Rows.Add(new object[] { });
 
-            dt1.Rows.Add();
-            dt1.Rows.Add();
-
-            dt1.Columns.Add("I/O", Type.GetType("System.String"));/*System.Decimal*/
-            dt1.Columns.Add("VÖEN", Type.GetType("System.String"));
-            dt1.Columns.Add("Adı", Type.GetType("System.String"));
-            dt1.Columns.Add("Tipi", Type.GetType("System.String"));
-            dt1.Columns.Add("Vəziyyəti", Type.GetType("System.String"));
-            dt1.Columns.Add("VHF tarixi", Type.GetType("System.String"));
-            dt1.Columns.Add("VHF Seriyası", Type.GetType("System.String"));
-            dt1.Columns.Add("VHF nömrəsi", Type.GetType("System.String"));
-            dt1.Columns.Add("Əsas qeyd", Type.GetType("System.String"));
-            dt1.Columns.Add("Əlavə qeyd", Type.GetType("System.String"));
-            dt1.Columns.Add("Malın ƏDV-siz ümumi dəyəri", Type.GetType("System.String"));
-            dt1.Columns.Add("Malın ƏDV məbləği", Type.GetType("System.String"));
+            dt0.Columns.Add("I/O", Type.GetType("System.String"));/*System.Decimal*/
+            dt0.Columns.Add("VÖEN", Type.GetType("System.String"));
+            dt0.Columns.Add("Adı", Type.GetType("System.String"));
+            dt0.Columns.Add("Tipi", Type.GetType("System.String"));
+            dt0.Columns.Add("Vəziyyəti", Type.GetType("System.String"));
+            dt0.Columns.Add("VHF tarixi", Type.GetType("System.String"));
+            dt0.Columns.Add("VHF Seriyası", Type.GetType("System.String"));
+            dt0.Columns.Add("VHF nömrəsi", Type.GetType("System.String"));
+            dt0.Columns.Add("Əsas qeyd", Type.GetType("System.String"));
+            dt0.Columns.Add("Əlavə qeyd", Type.GetType("System.String"));
+            dt0.Columns.Add("Malın ƏDV-siz ümumi dəyəri", Type.GetType("System.String"));
+            dt0.Columns.Add("Malın ƏDV məbləği", Type.GetType("System.String"));
 
             //foreach (var i in EVHFs)
             //{
@@ -251,7 +267,7 @@ namespace TaxesGovAzToExcelEVHF
             //}
             for (int i = 0; i < EVHFs.Count; i++)
             {
-                dt1.Rows.Add(new object[] { "I", EVHFs[i].Voen,
+                dt0.Rows.Add(new object[] { "I", EVHFs[i].Voen,
                                                  EVHFs[i].Ad,
                                                  EVHFs[i].Tip,
                                                  EVHFs[i].Veziyyet,
@@ -262,13 +278,22 @@ namespace TaxesGovAzToExcelEVHF
                                                  EVHFs[i].ElaveQeyd,
                                                  EVHFs[i].EDVsiz,
                                                  EVHFs[i].EDV });
+                //ds0.Tables.Add(dt0);
             }
-            ds.Tables.Add(dt1);
-            return ds;
+            //ds0.Tables.Add(CreateExcelFile.ListToDataTable(EVHFs));
+            ds0.Tables.Add(dt0);
+            return ds0;
         }
     }
     class Program
     {
+        private static string myIO;
+        public static string EVHFIO
+        {
+            get { return myIO = "I"; }
+            set { myIO = value; }
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Pleese inser Link");
@@ -286,7 +311,8 @@ namespace TaxesGovAzToExcelEVHF
             link = @"C:\text.html";
             
             List<EVHF> EVHFs = new List<EVHF>();
-            EVHFs = EVHF.RZLoadEVHF(link);
+            EVHF eVHF = new EVHF();
+            EVHFs = eVHF.RZLoadEVHF(link);
             //EVHFs.Add();
             EVHF.btnCreateExcel_Click(ref EVHFs);
             Console.ReadKey();
