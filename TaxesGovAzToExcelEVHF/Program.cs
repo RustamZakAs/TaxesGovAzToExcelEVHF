@@ -7,6 +7,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Xml;
 //using System.IO.PathTooLongException;
@@ -89,19 +90,46 @@ namespace TaxesGovAzToExcelEVHF
             //Directory.CreateDirectory(reallyLongDirectory);
             //**********TEST ERROR END**************
 
-            var temp = Path.GetTempFileName();
-            var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
-            using (StreamWriter sw = new StreamWriter(tempFile))
+            try
             {
-                sw.Write(link);
+                var temp = Path.GetTempFileName();
+                var tempFile = temp.Replace(Path.GetExtension(temp), ".html");  
+                using (StreamWriter sw = new StreamWriter(tempFile))
+                {
+                    sw.Write(link);
+                }
+                Process.Start(new ProcessStartInfo(tempFile));
             }
-            Process.Start(new ProcessStartInfo(tempFile));
+            catch (Exception e) 
+            {
+                Console.WriteLine(e.Message);
+            }
 
-            doc1.Load(link); //******************ERROR LEN************** 260 norm, my link 202
-
-            // From String
-            //var doc2 = new HtmlDocument();
-            //doc2.LoadHtml(link);
+            try
+            {
+                // Open the text file using a stream reader.
+                //using (StreamReader sr = new StreamReader(link)) //link = "TestFile.txt"
+                //{
+                //    // From Web
+                //    //var url = @"http://html-agility-pack.net/";
+                //    //var web = new HtmlWeb();
+                //    //var doc3 = web.Load(url);
+                //
+                //    // From String
+                //    //var doc2 = new HtmlDocument();
+                //    //doc2.LoadHtml(link);
+                //
+                //    // Read the stream to a string, and write the string to the console.
+                //    String line = sr.ReadToEnd();
+                //    Console.WriteLine(line);
+                //}
+                doc1.Load(link);
+            }
+            catch (Exception e) //******************ERROR LEN************** 260 norm, my link 202
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(e.Message);
+            }
 
             string tempDoc = doc1.ParsedText;
             string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
@@ -127,11 +155,6 @@ namespace TaxesGovAzToExcelEVHF
             newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
             newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
 
-            // From Web
-            //var url = @"http://html-agility-pack.net/";
-            //var web = new HtmlWeb();
-            //var doc3 = web.Load(url);
-            
             return StringToListEVHF(newTempDoc);
         }
         public static List<EVHF> StringToListEVHF(string str)
@@ -418,3 +441,25 @@ namespace TaxesGovAzToExcelEVHF
         }
     }
 }
+
+
+/*
+Process process = new Process();
+process.StartInfo.FileName = "ipconfig.exe";        
+process.StartInfo.UseShellExecute = false;
+process.StartInfo.RedirectStandardOutput = true;        
+process.Start();
+
+// Synchronously read the standard output of the spawned process. 
+StreamReader reader = process.StandardOutput;
+string output = reader.ReadToEnd();
+
+// Write the redirected output to this application's window.
+Console.WriteLine(output);
+
+process.WaitForExit();
+process.Close();
+
+Console.WriteLine("\n\nPress any key to exit.");
+Console.ReadLine();
+*/
