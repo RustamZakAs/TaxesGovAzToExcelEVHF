@@ -17,6 +17,24 @@ namespace TaxesGovAzToExcelEVHF
 {
     public class EVHF
     {
+        public EVHF(string iO, string voen, string ad, string tip, string veziyyet, string tarix, string seriya, string nomre, string esasQeyd, string elaveQeyd, string eDVsiz, string eDV, string hesab1C, string mVQeyd)
+        {
+            IO = iO;
+            Voen = voen;
+            Ad = ad;
+            Tip = tip;
+            Veziyyet = veziyyet;
+            Tarix = tarix;
+            Seriya = seriya;
+            Nomre = nomre;
+            EsasQeyd = esasQeyd;
+            ElaveQeyd = elaveQeyd;
+            EDVsiz = eDVsiz;
+            EDV = eDV;
+            Hesab1C = hesab1C;
+            MVQeyd = mVQeyd;
+        }
+
         public string IO { get; set; }
         public string Voen { get; set; }
         public string Ad { get; set; }
@@ -40,37 +58,37 @@ namespace TaxesGovAzToExcelEVHF
         public static List<EVHF> RZLoadEVHF(string link)
         {
             /*
-                        // The HtmlWeb class is a utility class to get the HTML over HTTP
-                        HtmlWeb htmlWeb = new HtmlWeb();
+            // The HtmlWeb class is a utility class to get the HTML over HTTP
+            HtmlWeb htmlWeb = new HtmlWeb();
 
-                        // Creates an HtmlDocument object from an URL
-                        HtmlDocument document = htmlWeb.Load(link);
+            // Creates an HtmlDocument object from an URL
+            HtmlDocument document = htmlWeb.Load(link);
 
-                        // Targets a specific node
-                        HtmlNode someNode = document.GetElementbyId("trback2");
+            // Targets a specific node
+            HtmlNode someNode = document.GetElementbyId("trback2");
 
-                        // If there is no node with that Id, someNode will be null
-                        if (someNode != null)
-                        {
-                            // Extracts all links within that node
-                            IEnumerable<HtmlNode> allLinks = someNode.Descendants("td");
+            // If there is no node with that Id, someNode will be null
+            if (someNode != null)
+            {
+                // Extracts all links within that node
+                IEnumerable<HtmlNode> allLinks = someNode.Descendants("td");
 
-                            Console.WriteLine(allLinks.Count<HtmlNode>());
-                            // Outputs the href for external links
-                            foreach (HtmlNode linki in allLinks)
-                            {
-                                Console.WriteLine(linki.InnerHtml);
+                Console.WriteLine(allLinks.Count<HtmlNode>());
+                // Outputs the href for external links
+                foreach (HtmlNode linki in allLinks)
+                {
+                    Console.WriteLine(linki.InnerHtml);
 
-                                // Checks whether the link contains an HREF attribute
-                                //if (linki.Attributes.Contains("trback2"))
-                                //{
-                                    // Simple check: if the href begins with "http://", prints it out
-                                    //if (linki.Attributes["trback2"].Value.StartsWith("http://"))
-                                //        Console.WriteLine(linki.Attributes["trback2"].Value);
-                                //}
-                                //Console.WriteLine(linki);
-                            }
-                        }
+                    // Checks whether the link contains an HREF attribute
+                    //if (linki.Attributes.Contains("trback2"))
+                    //{
+                        // Simple check: if the href begins with "http://", prints it out
+                        //if (linki.Attributes["trback2"].Value.StartsWith("http://"))
+                    //        Console.WriteLine(linki.Attributes["trback2"].Value);
+                    //}
+                    //Console.WriteLine(linki);
+                }
+            }
             */
 
             // From File
@@ -162,7 +180,8 @@ namespace TaxesGovAzToExcelEVHF
             //List<EVHF> RZEVHFList = new List<EVHF>();
 
             var RZEVHFList = new List<EVHF>();
-            var RZEVHF = new EVHF();
+            //var RZEVHF = new EVHF();
+            string[] RZEVHF = new string[14];
 
             int j = 0, k = 0, count = 0;
             for (int i = 0; i < str.Length; i++)
@@ -175,6 +194,7 @@ namespace TaxesGovAzToExcelEVHF
                 }
                 if (tempDocx == MainEVHF.TextForBegin)
                 {
+                    
                     count++;
                     string Xvalue = "";
                     int tempIndex = 0;
@@ -192,32 +212,45 @@ namespace TaxesGovAzToExcelEVHF
                         str.Length - 1 : (i + j + k + Xvalue.Length);
                     if (count == 1)
                     {
-                        RZEVHF.IO = MainEVHF.EVHFIO;
-                        RZEVHF.Voen = Xvalue;
+                        RZEVHF[0]/*.IO*/ = MainEVHF.EVHFIO;
+                        RZEVHF[1]/*.Voen*/ = Xvalue;
                     }
-                    if (count == 2) RZEVHF.Ad = Xvalue;
-                    if (count == 3) RZEVHF.Tip = Xvalue;
-                    if (count == 4) RZEVHF.Veziyyet = Xvalue;
-                    if (count == 5) RZEVHF.Tarix = Xvalue;
-                    if (count == 6) RZEVHF.Seriya = Xvalue;
-                    if (count == 7) RZEVHF.Nomre = Xvalue;
-                    if (count == 8) RZEVHF.EsasQeyd = Xvalue;
-                    if (count == 9) RZEVHF.ElaveQeyd = Xvalue;
+                    if (count == 2) RZEVHF[2]/*.Ad*/ = Xvalue;
+                    if (count == 3) RZEVHF[3]/*.Tip*/ = Xvalue;
+                    if (count == 4) RZEVHF[4]/*.Veziyyet*/ = Xvalue;
+                    if (count == 5) RZEVHF[5]/*.Tarix*/ = Xvalue;
+                    if (count == 6) RZEVHF[6]/*.Seriya*/ = Xvalue;
+                    if (count == 7) RZEVHF[7]/*.Nomre*/ = Xvalue;
+                    if (count == 8) RZEVHF[8]/*.EsasQeyd*/ = Xvalue;
+                    if (count == 9) RZEVHF[9]/*.ElaveQeyd*/ = Xvalue;
                     if (count == 10)
                     {
                         //Xvalue = Xvalue.Replace(".", ",");
                         //RZEVHF.EDVsiz = decimal.Parse(Xvalue);
-                        RZEVHF.EDVsiz = Xvalue;
+                        RZEVHF[10]/*.EDVsiz*/ = Xvalue;
                     }
                     if (count == 11)
                     {
                         //Xvalue = Xvalue.Replace(".", ",");
                         //RZEVHF.EDV = decimal.Parse(Xvalue);
-                        RZEVHF.EDV = Xvalue;
-                        Xvalue = "531.1";
-                        RZEVHF.Hesab1C = Xvalue;
-                        Console.WriteLine(RZEVHF.ToString());
-                        RZEVHFList.Add(RZEVHF);//**********ERROR***********
+                        RZEVHF[11]/*.EDV*/ = Xvalue;
+                        RZEVHF[12]/*.Hesab1C*/ = "531.1";
+                        RZEVHF[13]/*.MVQeyd*/ = "";
+                        //Console.WriteLine(RZEVHF.ToString());
+                        RZEVHFList.Add(new EVHF(RZEVHF[0], 
+                            RZEVHF[1], 
+                            RZEVHF[2], 
+                            RZEVHF[3], 
+                            RZEVHF[4], 
+                            RZEVHF[5],
+                            RZEVHF[6],
+                            RZEVHF[7],
+                            RZEVHF[8],
+                            RZEVHF[9],
+                            RZEVHF[10],
+                            RZEVHF[11],
+                            RZEVHF[12],
+                            RZEVHF[13]));//**********ERROR***********
                         count = 0;
                     }
                 }
@@ -428,7 +461,7 @@ namespace TaxesGovAzToExcelEVHF
                     @"&sw=0" +
                     @"&r=1" +
                     @"&sv=" + EVHFsVOEN;
-            //link = @"C:\text.html";
+            link = @"C:\text.html";
             EVHFsLink = link;
         }
         public static void Main(string[] args)
