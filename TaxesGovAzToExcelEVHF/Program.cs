@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+//using System.IO.PathTooLongException;
 //using Excel = Microsoft.Office.Interop.Excel;
 
 namespace TaxesGovAzToExcelEVHF
@@ -37,53 +38,67 @@ namespace TaxesGovAzToExcelEVHF
 
         public static List<EVHF> RZLoadEVHF(string link)
         {
-/*
-            // The HtmlWeb class is a utility class to get the HTML over HTTP
-            HtmlWeb htmlWeb = new HtmlWeb();
+            /*
+                        // The HtmlWeb class is a utility class to get the HTML over HTTP
+                        HtmlWeb htmlWeb = new HtmlWeb();
 
-            // Creates an HtmlDocument object from an URL
-            HtmlDocument document = htmlWeb.Load(link);
+                        // Creates an HtmlDocument object from an URL
+                        HtmlDocument document = htmlWeb.Load(link);
 
-            // Targets a specific node
-            HtmlNode someNode = document.GetElementbyId("trback2");
+                        // Targets a specific node
+                        HtmlNode someNode = document.GetElementbyId("trback2");
 
-            // If there is no node with that Id, someNode will be null
-            if (someNode != null)
-            {
-                // Extracts all links within that node
-                IEnumerable<HtmlNode> allLinks = someNode.Descendants("td");
+                        // If there is no node with that Id, someNode will be null
+                        if (someNode != null)
+                        {
+                            // Extracts all links within that node
+                            IEnumerable<HtmlNode> allLinks = someNode.Descendants("td");
 
-                Console.WriteLine(allLinks.Count<HtmlNode>());
-                // Outputs the href for external links
-                foreach (HtmlNode linki in allLinks)
-                {
-                    Console.WriteLine(linki.InnerHtml);
+                            Console.WriteLine(allLinks.Count<HtmlNode>());
+                            // Outputs the href for external links
+                            foreach (HtmlNode linki in allLinks)
+                            {
+                                Console.WriteLine(linki.InnerHtml);
 
-                    // Checks whether the link contains an HREF attribute
-                    //if (linki.Attributes.Contains("trback2"))
-                    //{
-                        // Simple check: if the href begins with "http://", prints it out
-                        //if (linki.Attributes["trback2"].Value.StartsWith("http://"))
-                    //        Console.WriteLine(linki.Attributes["trback2"].Value);
-                    //}
-                    //Console.WriteLine(linki);
-                }
-            }
-*/
-
-            //var temp = Path.GetTempFileName();
-            //var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
-            //using (System.IO.StreamWriter sw = new System.IO.StreamWriter(tempFile))
-            //{
-            //    sw.Write("C:\\text.html");
-            //}
-            //Process.Start(new ProcessStartInfo(tempFile));
+                                // Checks whether the link contains an HREF attribute
+                                //if (linki.Attributes.Contains("trback2"))
+                                //{
+                                    // Simple check: if the href begins with "http://", prints it out
+                                    //if (linki.Attributes["trback2"].Value.StartsWith("http://"))
+                                //        Console.WriteLine(linki.Attributes["trback2"].Value);
+                                //}
+                                //Console.WriteLine(linki);
+                            }
+                        }
+            */
 
             // From File
             var doc1 = new HtmlDocument();
+            //< runtime >
+            //< AppContextSwitchOverrides value = "Switch.System.IO.UseLegacyPathHandling=false;Switch.System.IO.BlockLongPaths=false" />
+            //</ runtime >
+            Console.WriteLine(link.Length); 
             Console.WriteLine(link);
-            doc1.Load(link);
-            
+
+            //**********TEST ERROR BEGIN**************
+            //string reallyLongDirectory = @"C:\Test\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            //reallyLongDirectory = reallyLongDirectory + @"\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            //reallyLongDirectory = reallyLongDirectory + @"\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            //Console.WriteLine($"Creating a directory that is {reallyLongDirectory.Length} characters long");
+            //Directory.CreateDirectory(reallyLongDirectory);
+            //**********TEST ERROR END**************
+
+            var temp = Path.GetTempFileName();
+            var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
+            using (StreamWriter sw = new StreamWriter(tempFile))
+            {
+                sw.Write(link);
+            }
+            Process.Start(new ProcessStartInfo(tempFile));
+
+            doc1.Load(link); //******************ERROR LEN************** 260 norm, my link 202
+
             // From String
             //var doc2 = new HtmlDocument();
             //doc2.LoadHtml(link);
@@ -176,9 +191,10 @@ namespace TaxesGovAzToExcelEVHF
                         //Xvalue = Xvalue.Replace(".", ",");
                         //RZEVHF.EDV = decimal.Parse(Xvalue);
                         RZEVHF.EDV = Xvalue;
-                        RZEVHF.Hesab1C = "531.1";
+                        Xvalue = "531.1";
+                        RZEVHF.Hesab1C = Xvalue;
                         Console.WriteLine(RZEVHF.ToString());
-                        RZEVHFList.Add(RZEVHF);
+                        RZEVHFList.Add(RZEVHF);//**********ERROR***********
                         count = 0;
                     }
                 }
@@ -281,62 +297,115 @@ namespace TaxesGovAzToExcelEVHF
     }
     class MainEVHF
     {
+        //*****************************************
         private static string myIO;
         public static string EVHFIO
         {
             get { return myIO = "I"; }
             set { myIO = value; }
         }
-        private static string textForBegin;
+        //*****************************************
+        private static string myTextForBegin;
         public static string TextForBegin
         {
-            get { return textForBegin = "&nbsp;"; }
-            set { textForBegin = value; }
+            get { return myTextForBegin = "&nbsp;"; }
+            set { myTextForBegin = value; }
         }
+        //*****************************************
         public static string EVHFsLink { get; set; }
+        //*****************************************
+        private static string myEVHFsVoen;
+        public static string EVHFsVOEN
+        {
+            get { return myEVHFsVoen = "1501069851"; }
+            set { myEVHFsVoen = value; }
+        }
+        //*****************************************
+        public static string EVHFIlkTarix { get; set; }
+        //*****************************************
+        public static string EVHFSonTarix { get; set; }
+        //*****************************************
         public static void MainMenyu ()
         {
             Console.WriteLine("Pleese inser Link");
             string link;
             link = Console.ReadLine();
-            link = //@"https://vroom.e-taxes.gov.az/index/index/" +
-                "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE=" +
-                "&w=2" +
-                "&v=" +
-                "&fd=20180529000000" +
-                "&td=20180529000000&s=" +
-                "&n=" +
-                "&sw=0" +
-                "&r=1" +
-                "&sv=1501069851";
+            //link = //@"https://vroom.e-taxes.gov.az/index/index/" +
+            //    "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE=" +
+            //    "&w=2" +
+            //    "&v=" +
+            //    "&fd=20180529000000" +
+            //    "&td=20180529000000&s=" +
+            //    "&n=" +
+            //    "&sw=0" +
+            //    "&r=1" +
+            //    "&sv=1501069851";
             string XToken = "";
             for (int i = 0; i < link.Length; i++)
             {
-                if (i < link.Length-5)
+                string Xtemp = "";
+                if (i < link.Length - 3)
                 {
-                    string Xtemp = "";
                     Xtemp += link[i + 0];
                     Xtemp += link[i + 1];
-                    Xtemp += link[i + 2];
-                    Xtemp += link[i + 3];
-                    if (Xtemp == "tkn=")
+                    if (Xtemp == "t=")
                     {
                         int x = 0, xlen = 0;
                         do
                         {
                             xlen = i + Xtemp.Length + x++;
                             XToken += link[xlen];
-                            //Console.WriteLine(XToken);
                         } while (link[xlen] != '=');
-                        XToken = XToken.Remove(XToken.Length - 1,1);
+                        XToken = XToken.Remove(XToken.Length - 1, 1);
+                    }
+                }
+            }
+            if (XToken.Length == 0)
+            {
+                for (int i = 0; i < link.Length; i++)
+                {
+                    string Xtemp = "";
+                    if (i < link.Length - 3)
+                    {
+                        Xtemp += link[i + 0];
+                        Xtemp += link[i + 1];
+                        Xtemp += link[i + 2];
+                        Xtemp += link[i + 3];
+                        if (Xtemp == "tkn=")
+                        {
+                            int x = 0, xlen = 0;
+                            do
+                            {
+                                xlen = i + Xtemp.Length + x++;
+                                XToken += link[xlen];
+                            } while (link[xlen] != '=');
+                            XToken = XToken.Remove(XToken.Length - 1, 1);
+                        }
                     }
                 }
             }
             Console.WriteLine(XToken);
-            link = @"C:\text.html";
+
+            Console.WriteLine("Ilk tarixi daxil edin: YYYYMMDD");
+            EVHFIlkTarix = Console.ReadLine();
+            Console.WriteLine("Son tarixi daxil edin: YYYYMMDD");
+            EVHFSonTarix = Console.ReadLine();
+            Console.WriteLine($"VOEN: {EVHFsVOEN}");
 
 
 
+            link = @"https://vroom.e-taxes.gov.az/index/index/" +
+                    @"printServlet?tkn=" + XToken + @"==" +
+                    @"&w=2" +
+                    @"&v=" +
+                    @"&fd=" + EVHFIlkTarix + @"000000" +
+                    @"&td=" + EVHFSonTarix + @"000000" +
+                    @"&s=" +
+                    @"&n=" +
+                    @"&sw=0" +
+                    @"&r=1" +
+                    @"&sv=" + EVHFsVOEN;
+            //link = @"C:\text.html";
             EVHFsLink = link;
         }
         public static void Main(string[] args)
