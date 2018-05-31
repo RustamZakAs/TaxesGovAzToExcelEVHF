@@ -585,12 +585,14 @@ namespace TaxesGovAzToExcelEVHF
 
             string[] linkArray = new string[days];
             string strDate = "";
+            DateTime tempDateTime;
 
             for (int i = 0; i < days; i++)
             {
-                strDate += beginDateTime.Year.ToString();
-                strDate += beginDateTime.Month.ToString().Length == 1 ? $"0{beginDateTime.Month.ToString().Length}" : $"{beginDateTime.Month.ToString().Length}";
-                strDate += beginDateTime.Day.ToString().Length == 1 ? $"0{beginDateTime.Day.ToString().Length}" : $"{beginDateTime.Day.ToString().Length}";
+                tempDateTime = beginDateTime.AddDays(i);
+                strDate += tempDateTime.Year.ToString();
+                strDate += tempDateTime.Month.ToString().Length == 1 ? $"0{tempDateTime.Month.ToString().Length}" : $"{tempDateTime.Month.ToString().Length}";
+                strDate += tempDateTime.Day.ToString().Length == 1 ? $"0{tempDateTime.Day.ToString().Length}" : $"{tempDateTime.Day.ToString().Length}";
 
                 linkArray[i] = @"https://vroom.e-taxes.gov.az/index/index/" +
                     @"printServlet?tkn=" + CopyToken(link) + @"==" +
@@ -610,7 +612,7 @@ namespace TaxesGovAzToExcelEVHF
         public static void Main(string[] args)
         {
             MainMenyu();
-            string[] linrArray = CreateLinkArray(EVHFsLink, /*EVHFIlkTarix, EVHFSonTarix*/"20180530","20180531");
+            string[] linrArray = CreateLinkArray(EVHFsLink, EVHFIlkTarix, EVHFSonTarix);
 
             List<EVHF> EVHFlist = new List<EVHF>();
             EVHF.RZLoadEVHF(ref EVHFlist, linrArray);
