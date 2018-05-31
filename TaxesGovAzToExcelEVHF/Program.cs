@@ -17,6 +17,7 @@ namespace TaxesGovAzToExcelEVHF
 {
     public class EVHF
     {
+        public EVHF() {}
         public EVHF(string iO, string voen, string ad, string tip, string veziyyet, string tarix, string seriya, string nomre, string esasQeyd, string elaveQeyd, string eDVsiz, string eDV, string hesab1C, string mVQeyd)
         {
             IO = iO;
@@ -33,6 +34,24 @@ namespace TaxesGovAzToExcelEVHF
             EDV = eDV;
             Hesab1C = hesab1C;
             MVQeyd = mVQeyd;
+        }
+
+        public EVHF(EVHF eVHF)
+        {
+            IO = eVHF.IO;
+            Voen = eVHF.Voen;
+            Ad = eVHF.Ad;
+            Tip = eVHF.Tip;
+            Veziyyet = eVHF.Veziyyet;
+            Tarix = eVHF.Tarix;
+            Seriya = eVHF.Seriya;
+            Nomre = eVHF.Nomre;
+            EsasQeyd = eVHF.EsasQeyd;
+            ElaveQeyd = eVHF.ElaveQeyd;
+            EDVsiz = eVHF.EDVsiz;
+            EDV = eVHF.EDV;
+            Hesab1C = eVHF.Hesab1C;
+            MVQeyd = eVHF.MVQeyd;
         }
 
         public string IO { get; set; }
@@ -55,7 +74,7 @@ namespace TaxesGovAzToExcelEVHF
             return $"{IO}-{Voen}-{Ad}-{Tip}-{Veziyyet}-{Tarix}-{Seriya}-{Nomre}-{EsasQeyd}-{ElaveQeyd}-{EDVsiz}-{EDV}-{Hesab1C}-{MVQeyd}";
         }
 
-        public static List<EVHF> RZLoadEVHF(string link)
+        public static void RZLoadEVHF(ref List<EVHF> EVHFList, string[] link)
         {
             /*
             // The HtmlWeb class is a utility class to get the HTML over HTTP
@@ -96,8 +115,11 @@ namespace TaxesGovAzToExcelEVHF
             //< runtime >
             //< AppContextSwitchOverrides value = "Switch.System.IO.UseLegacyPathHandling=false;Switch.System.IO.BlockLongPaths=false" />
             //</ runtime >
-            Console.WriteLine(link.Length); 
-            Console.WriteLine(link);
+            for (int i = 0; i < link.Length; i++)
+            {
+                Console.WriteLine(link.Length); 
+                Console.WriteLine(link[i]);
+            }
 
             //**********TEST ERROR BEGIN**************
             //string reallyLongDirectory = @"C:\Test\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -108,80 +130,86 @@ namespace TaxesGovAzToExcelEVHF
             //Directory.CreateDirectory(reallyLongDirectory);
             //**********TEST ERROR END**************
 
-            try
+            var temp = Path.GetTempFileName();
+            var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
+            for (int i = 0; i < link.Length; i++)
             {
-                var temp = Path.GetTempFileName();
-                var tempFile = temp.Replace(Path.GetExtension(temp), ".html");  
-                using (StreamWriter sw = new StreamWriter(tempFile))
+                try
                 {
-                    sw.Write(link);
+                    using (StreamWriter sw = new StreamWriter(tempFile))
+                    {
+                        for (int j = 0; j < link.Length; j++)
+                        {
+                            sw.Write($"{link[j]}\n");
+                        }
+                    }
                 }
-                Process.Start(new ProcessStartInfo(tempFile));
-            }
-            catch (Exception e) 
-            {
-                Console.WriteLine(e.Message);
-            }
+                catch (Exception e) 
+                {
+                    Console.WriteLine(e.Message);
+                }
 
-            try
-            {
-                // Open the text file using a stream reader.
-                //using (StreamReader sr = new StreamReader(link)) //link = "TestFile.txt"
-                //{
-                //    // From Web
-                //    //var url = @"http://html-agility-pack.net/";
-                //    //var web = new HtmlWeb();
-                //    //var doc3 = web.Load(url);
-                //
-                //    // From String
-                //    //var doc2 = new HtmlDocument();
-                //    //doc2.LoadHtml(link);
-                //
-                //    // Read the stream to a string, and write the string to the console.
-                //    String line = sr.ReadToEnd();
-                //    Console.WriteLine(line);
-                //}
-                doc1.Load(link);
+                try
+                {
+                    // Open the text file using a stream reader.
+                    //using (StreamReader sr = new StreamReader(link)) //link = "TestFile.txt"
+                    //{
+                    //    // From Web
+                    //    //var url = @"http://html-agility-pack.net/";
+                    //    //var web = new HtmlWeb();
+                    //    //var doc3 = web.Load(url);
+                    //
+                    //    // From String
+                    //    //var doc2 = new HtmlDocument();
+                    //    //doc2.LoadHtml(link);
+                    //
+                    //    // Read the stream to a string, and write the string to the console.
+                    //    String line = sr.ReadToEnd();
+                    //    Console.WriteLine(line);
+                    //}
+                    doc1.Load(link[i]);
+                }
+                catch (Exception e) //******************ERROR LEN************** 260 norm, my link 202
+                {
+                    Console.WriteLine("The file could not be read:");
+                    Console.WriteLine(e.Message);
+                }
+
+                string tempDoc = doc1.ParsedText;
+                string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
+                newTempDoc = newTempDoc.Replace("Й™", "ə");
+                newTempDoc = newTempDoc.Replace("Г–", "Ö");
+                newTempDoc = newTempDoc.Replace("Г¶", "ö");
+                newTempDoc = newTempDoc.Replace("Дћ", "Ğ");
+                newTempDoc = newTempDoc.Replace("Дџ", "ğ");
+                newTempDoc = newTempDoc.Replace("Д°", "İ");
+                newTempDoc = newTempDoc.Replace("Д±", "ı"); 
+                newTempDoc = newTempDoc.Replace("Гњ", "Ü");
+                newTempDoc = newTempDoc.Replace("Гј", "ü");
+                newTempDoc = newTempDoc.Replace("Г‡", "Ç"); 
+                newTempDoc = newTempDoc.Replace("Г§", "ç");
+                newTempDoc = newTempDoc.Replace("Ећ", "Ş");
+                newTempDoc = newTempDoc.Replace("Еџ", "ş");
+                //newTempDoc = newTempDoc.Replace("&nbsp;", "");
+
+                newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
+                newTempDoc = newTempDoc.Replace("<HTML>", "");
+                newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
+                newTempDoc = newTempDoc.Replace("<BODY>  <b> Axtarış şərtləri :<b>", "");
+                newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
+                newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
+
+                EVHFList.AddRange(StringToListEVHF(newTempDoc));
             }
-            catch (Exception e) //******************ERROR LEN************** 260 norm, my link 202
-            {
-                Console.WriteLine("The file could not be read:");
-                Console.WriteLine(e.Message);
-            }
-
-            string tempDoc = doc1.ParsedText;
-            string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
-            newTempDoc = newTempDoc.Replace("Й™", "ə");
-            newTempDoc = newTempDoc.Replace("Г–", "Ö");
-            newTempDoc = newTempDoc.Replace("Г¶", "ö");
-            newTempDoc = newTempDoc.Replace("Дћ", "Ğ");
-            newTempDoc = newTempDoc.Replace("Дџ", "ğ");
-            newTempDoc = newTempDoc.Replace("Д°", "İ");
-            newTempDoc = newTempDoc.Replace("Д±", "ı"); 
-            newTempDoc = newTempDoc.Replace("Гњ", "Ü");
-            newTempDoc = newTempDoc.Replace("Гј", "ü");
-            newTempDoc = newTempDoc.Replace("Г‡", "Ç"); 
-            newTempDoc = newTempDoc.Replace("Г§", "ç");
-            newTempDoc = newTempDoc.Replace("Ећ", "Ş");
-            newTempDoc = newTempDoc.Replace("Еџ", "ş");
-            //newTempDoc = newTempDoc.Replace("&nbsp;", "");
-
-            newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
-            newTempDoc = newTempDoc.Replace("<HTML>", "");
-            newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
-            newTempDoc = newTempDoc.Replace("<BODY>  <b> Axtarış şərtləri :<b>", "");
-            newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
-            newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
-
-            return StringToListEVHF(newTempDoc);
+            Process.Start(new ProcessStartInfo(tempFile));
         }
         public static List<EVHF> StringToListEVHF(string str)
         {
             //List<EVHF> RZEVHFList = new List<EVHF>();
 
             var RZEVHFList = new List<EVHF>();
-            //var RZEVHF = new EVHF();
-            string[] RZEVHF = new string[14];
+            var RZEVHF = new EVHF();
+            //string[] RZEVHFstring = new string[14];
 
             int j = 0, k = 0, count = 0;
             for (int i = 0; i < str.Length; i++)
@@ -194,7 +222,6 @@ namespace TaxesGovAzToExcelEVHF
                 }
                 if (tempDocx == MainEVHF.TextForBegin)
                 {
-                    
                     count++;
                     string Xvalue = "";
                     int tempIndex = 0;
@@ -212,45 +239,46 @@ namespace TaxesGovAzToExcelEVHF
                         str.Length - 1 : (i + j + k + Xvalue.Length);
                     if (count == 1)
                     {
-                        RZEVHF[0]/*.IO*/ = MainEVHF.EVHFIO;
-                        RZEVHF[1]/*.Voen*/ = Xvalue;
+                        RZEVHF/*[0]*/.IO = MainEVHF.EVHFIO;
+                        RZEVHF/*[1]*/.Voen = Xvalue;
                     }
-                    if (count == 2) RZEVHF[2]/*.Ad*/ = Xvalue;
-                    if (count == 3) RZEVHF[3]/*.Tip*/ = Xvalue;
-                    if (count == 4) RZEVHF[4]/*.Veziyyet*/ = Xvalue;
-                    if (count == 5) RZEVHF[5]/*.Tarix*/ = Xvalue;
-                    if (count == 6) RZEVHF[6]/*.Seriya*/ = Xvalue;
-                    if (count == 7) RZEVHF[7]/*.Nomre*/ = Xvalue;
-                    if (count == 8) RZEVHF[8]/*.EsasQeyd*/ = Xvalue;
-                    if (count == 9) RZEVHF[9]/*.ElaveQeyd*/ = Xvalue;
+                    if (count == 2) RZEVHF/*[2]*/.Ad = Xvalue;
+                    if (count == 3) RZEVHF/*[3]*/.Tip = Xvalue;
+                    if (count == 4) RZEVHF/*[4]*/.Veziyyet = Xvalue;
+                    if (count == 5) RZEVHF/*[5]*/.Tarix = Xvalue;
+                    if (count == 6) RZEVHF/*[6]*/.Seriya = Xvalue;
+                    if (count == 7) RZEVHF/*[7]*/.Nomre = Xvalue;
+                    if (count == 8) RZEVHF/*[8]*/.EsasQeyd = Xvalue;
+                    if (count == 9) RZEVHF/*[9]*/.ElaveQeyd = Xvalue;
                     if (count == 10)
                     {
                         //Xvalue = Xvalue.Replace(".", ",");
                         //RZEVHF.EDVsiz = decimal.Parse(Xvalue);
-                        RZEVHF[10]/*.EDVsiz*/ = Xvalue;
+                        RZEVHF/*[10]*/.EDVsiz = Xvalue;
                     }
                     if (count == 11)
                     {
                         //Xvalue = Xvalue.Replace(".", ",");
                         //RZEVHF.EDV = decimal.Parse(Xvalue);
-                        RZEVHF[11]/*.EDV*/ = Xvalue;
-                        RZEVHF[12]/*.Hesab1C*/ = "531.1";
-                        RZEVHF[13]/*.MVQeyd*/ = "";
+                        RZEVHF/*[11]*/.EDV = Xvalue;
+                        RZEVHF/*[12]*/.Hesab1C = "531.1";
+                        RZEVHF/*[13]*/.MVQeyd = "";
                         //Console.WriteLine(RZEVHF.ToString());
-                        RZEVHFList.Add(new EVHF(RZEVHF[0], 
-                            RZEVHF[1], 
-                            RZEVHF[2], 
-                            RZEVHF[3], 
-                            RZEVHF[4], 
-                            RZEVHF[5],
-                            RZEVHF[6],
-                            RZEVHF[7],
-                            RZEVHF[8],
-                            RZEVHF[9],
-                            RZEVHF[10],
-                            RZEVHF[11],
-                            RZEVHF[12],
-                            RZEVHF[13]));//**********ERROR***********
+                        RZEVHFList.Add(new EVHF(RZEVHF));
+                        //RZEVHFList.Add(new EVHF(RZEVHF[0], 
+                        //    RZEVHF[1], 
+                        //    RZEVHF[2], 
+                        //    RZEVHF[3], 
+                        //    RZEVHF[4], 
+                        //    RZEVHF[5],
+                        //    RZEVHF[6],
+                        //    RZEVHF[7],
+                        //    RZEVHF[8],
+                        //    RZEVHF[9],
+                        //    RZEVHF[10],
+                        //    RZEVHF[11],
+                        //    RZEVHF[12],
+                        //    RZEVHF[13]));//**********ERROR***********
                         count = 0;
                     }
                 }
@@ -383,9 +411,15 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static void MainMenyu ()
         {
-            Console.WriteLine("Pleese inser Link");
             string link;
-            link = Console.ReadLine();
+            bool tokenExsist = false;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Pleese inser Link");
+                link = Console.ReadLine();
+                if (CopyToken(link).Length > 0) tokenExsist = true;
+            } while (!tokenExsist);
             //link = //@"https://vroom.e-taxes.gov.az/index/index/" +
             //    "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE=" +
             //    "&w=2" +
@@ -396,6 +430,29 @@ namespace TaxesGovAzToExcelEVHF
             //    "&sw=0" +
             //    "&r=1" +
             //    "&sv=1501069851";
+
+            Console.WriteLine("Ilk tarixi daxil edin: YYYYMMDD");
+            EVHFIlkTarix = Console.ReadLine();
+            Console.WriteLine("Son tarixi daxil edin: YYYYMMDD");
+            EVHFSonTarix = Console.ReadLine();
+            Console.WriteLine($"VOEN: {CopyVoen(link)}");
+
+            //link = @"https://vroom.e-taxes.gov.az/index/index/" +
+            //        @"printServlet?tkn=" + CopyToken(link) + @"==" +
+            //        @"&w=2" +
+            //        @"&v=" +
+            //        @"&fd=" + EVHFIlkTarix + @"000000" +
+            //        @"&td=" + EVHFSonTarix + @"000000" +
+            //        @"&s=" +
+            //        @"&n=" +
+            //        @"&sw=0" +
+            //        @"&r=1" +
+            //        @"&sv=" + EVHFsVOEN;
+            //link = @"C:\text.html";
+            EVHFsLink = link;
+        }
+        private static string CopyToken(string link)
+        {
             string XToken = "";
             for (int i = 0; i < link.Length; i++)
             {
@@ -410,9 +467,10 @@ namespace TaxesGovAzToExcelEVHF
                         do
                         {
                             xlen = i + Xtemp.Length + x++;
-                            XToken += link[xlen];
-                        } while (link[xlen] != '=');
-                        XToken = XToken.Remove(XToken.Length - 1, 1);
+                            if (link[xlen] == '=' || link[xlen] == '&') break;
+                            if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
+                        } while (true);
+                        //XToken = XToken.Remove(XToken.Length - 1, 1);
                     }
                 }
             }
@@ -433,42 +491,129 @@ namespace TaxesGovAzToExcelEVHF
                             do
                             {
                                 xlen = i + Xtemp.Length + x++;
-                                XToken += link[xlen];
-                            } while (link[xlen] != '=');
-                            XToken = XToken.Remove(XToken.Length - 1, 1);
+                                if (link[xlen] == '=' || link[xlen] == '&') break;
+                                if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
+                            } while (true);
+                            //XToken = XToken.Remove(XToken.Length - 1, 1);
                         }
                     }
                 }
             }
             Console.WriteLine(XToken);
+            return XToken;
+        }
+        private static string CopyVoen(string link)
+        {
+            string XToken = "";
+            for (int i = 0; i < link.Length; i++)
+            {
+                string Xtemp = "";
+                if (i < link.Length - 3)
+                {
+                    Xtemp += link[i + 0];
+                    Xtemp += link[i + 1];
+                    if (Xtemp == "v=")
+                    {
+                        int x = 0, xlen = 0;
+                        do
+                        {
+                            xlen = i + Xtemp.Length + x++;
+                            if (link[xlen] == '=' || link[xlen] == '&') break;
+                            if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
+                        } while (true);
+                        //XToken = XToken.Remove(XToken.Length - 1, 1);
+                    }
+                }
+            }
+            if (XToken.Length == 0)
+            {
+                for (int i = 0; i < link.Length; i++)
+                {
+                    string Xtemp = "";
+                    if (i < link.Length - 3)
+                    {
+                        Xtemp += link[i + 0];
+                        Xtemp += link[i + 1];
+                        Xtemp += link[i + 2];
+                        Xtemp += link[i + 3];
+                        if (Xtemp == "&sv=")
+                        {
+                            int x = 0, xlen = 0;
+                            do
+                            {
+                                xlen = i + Xtemp.Length + x++;
+                                if (link[xlen] == '=' || link[xlen] == '&') break;
+                                if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
+                            } while (true);
+                            //XToken = XToken.Remove(XToken.Length - 1, 1);
+                        }
+                    }
+                }
+            }
+            Console.WriteLine(XToken);
+            return XToken;
+        }
+        private static string[] CreateLinkArray (string link, string beginDate, string endDate)
+        {
+            string xyear = "", xmonth = "", xday = "";
+            xyear += beginDate[0];
+            xyear += beginDate[1];
+            xyear += beginDate[2];
+            xyear += beginDate[3];
+            xmonth += beginDate[4];
+            xmonth += beginDate[5];
+            xday += beginDate[6];
+            xday += beginDate[7];
 
-            Console.WriteLine("Ilk tarixi daxil edin: YYYYMMDD");
-            EVHFIlkTarix = Console.ReadLine();
-            Console.WriteLine("Son tarixi daxil edin: YYYYMMDD");
-            EVHFSonTarix = Console.ReadLine();
-            Console.WriteLine($"VOEN: {EVHFsVOEN}");
+            DateTime beginDateTime = new DateTime(int.Parse(xyear), int.Parse(xmonth), int.Parse(xday));
 
+            xyear = ""; xmonth = ""; xday = "";
+            xyear += endDate[0];
+            xyear += endDate[1];
+            xyear += endDate[2];
+            xyear += endDate[3];
+            xmonth += endDate[4];
+            xmonth += endDate[5];
+            xday += endDate[6];
+            xday += endDate[7];
 
+            DateTime endDateTime = new DateTime(int.Parse(xyear), int.Parse(xmonth), int.Parse(xday));
 
-            link = @"https://vroom.e-taxes.gov.az/index/index/" +
-                    @"printServlet?tkn=" + XToken + @"==" +
+            TimeSpan difference = endDateTime.Date - beginDateTime.Date;
+            int days = (int)difference.TotalDays + 1;
+            //Console.WriteLine(days);
+
+            string[] linkArray = new string[days];
+            string strDate = "";
+
+            for (int i = 0; i < days; i++)
+            {
+                strDate += beginDateTime.Year.ToString();
+                strDate += beginDateTime.Month.ToString().Length == 1 ? $"0{beginDateTime.Month.ToString().Length}" : $"{beginDateTime.Month.ToString().Length}";
+                strDate += beginDateTime.Day.ToString().Length == 1 ? $"0{beginDateTime.Day.ToString().Length}" : $"{beginDateTime.Day.ToString().Length}";
+
+                linkArray[i] = @"https://vroom.e-taxes.gov.az/index/index/" +
+                    @"printServlet?tkn=" + CopyToken(link) + @"==" +
                     @"&w=2" +
                     @"&v=" +
-                    @"&fd=" + EVHFIlkTarix + @"000000" +
-                    @"&td=" + EVHFSonTarix + @"000000" +
+                    @"&fd=" + strDate + @"000000" +
+                    @"&td=" + strDate + @"000000" +
                     @"&s=" +
                     @"&n=" +
                     @"&sw=0" +
                     @"&r=1" +
                     @"&sv=" + EVHFsVOEN;
-            link = @"C:\text.html";
-            EVHFsLink = link;
+                //linkArray[i] = $"C:\\text{i}.html";
+            }
+            return linkArray;
         }
         public static void Main(string[] args)
         {
             MainMenyu();
+            string[] linrArray = CreateLinkArray(EVHFsLink, /*EVHFIlkTarix, EVHFSonTarix*/"20180530","20180531");
 
-            List<EVHF> EVHFlist = EVHF.RZLoadEVHF(EVHFsLink);
+            List<EVHF> EVHFlist = new List<EVHF>();
+            EVHF.RZLoadEVHF(ref EVHFlist, linrArray);
             EVHF.CreateExcel(ref EVHFlist);
             Console.ReadKey();
         }
