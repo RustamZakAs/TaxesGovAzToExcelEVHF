@@ -140,7 +140,7 @@ namespace TaxesGovAzToExcelEVHF
                     {
                         for (int j = 0; j < link.Length; j++)
                         {
-                            sw.Write($"{link[j]}\n");
+                            sw.Write($"{link[j]}<\br>");
                         }
                     }
                 }
@@ -167,7 +167,7 @@ namespace TaxesGovAzToExcelEVHF
                     //    String line = sr.ReadToEnd();
                     //    Console.WriteLine(line);
                     //}
-                    doc1.Load(link[i]);
+                    //---doc1.Load(link[i]);
                 }
                 catch (Exception e) //******************ERROR LEN************** 260 norm, my link 202
                 {
@@ -175,31 +175,31 @@ namespace TaxesGovAzToExcelEVHF
                     Console.WriteLine(e.Message);
                 }
 
-                string tempDoc = doc1.ParsedText;
-                string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
-                newTempDoc = newTempDoc.Replace("Й™", "ə");
-                newTempDoc = newTempDoc.Replace("Г–", "Ö");
-                newTempDoc = newTempDoc.Replace("Г¶", "ö");
-                newTempDoc = newTempDoc.Replace("Дћ", "Ğ");
-                newTempDoc = newTempDoc.Replace("Дџ", "ğ");
-                newTempDoc = newTempDoc.Replace("Д°", "İ");
-                newTempDoc = newTempDoc.Replace("Д±", "ı"); 
-                newTempDoc = newTempDoc.Replace("Гњ", "Ü");
-                newTempDoc = newTempDoc.Replace("Гј", "ü");
-                newTempDoc = newTempDoc.Replace("Г‡", "Ç"); 
-                newTempDoc = newTempDoc.Replace("Г§", "ç");
-                newTempDoc = newTempDoc.Replace("Ећ", "Ş");
-                newTempDoc = newTempDoc.Replace("Еџ", "ş");
+                //---string tempDoc = doc1.ParsedText;
+                //---string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
+                //---newTempDoc = newTempDoc.Replace("Й™", "ə");
+                //---newTempDoc = newTempDoc.Replace("Г–", "Ö");
+                //---newTempDoc = newTempDoc.Replace("Г¶", "ö");
+                //---newTempDoc = newTempDoc.Replace("Дћ", "Ğ");
+                //---newTempDoc = newTempDoc.Replace("Дџ", "ğ");
+                //---newTempDoc = newTempDoc.Replace("Д°", "İ");
+                //---newTempDoc = newTempDoc.Replace("Д±", "ı"); 
+                //---newTempDoc = newTempDoc.Replace("Гњ", "Ü");
+                //---newTempDoc = newTempDoc.Replace("Гј", "ü");
+                //---newTempDoc = newTempDoc.Replace("Г‡", "Ç"); 
+                //---newTempDoc = newTempDoc.Replace("Г§", "ç");
+                //---newTempDoc = newTempDoc.Replace("Ећ", "Ş");
+                //---newTempDoc = newTempDoc.Replace("Еџ", "ş");
                 //newTempDoc = newTempDoc.Replace("&nbsp;", "");
 
-                newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
-                newTempDoc = newTempDoc.Replace("<HTML>", "");
-                newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
-                newTempDoc = newTempDoc.Replace("<BODY>  <b> Axtarış şərtləri :<b>", "");
-                newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
-                newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
+                //---newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
+                //---newTempDoc = newTempDoc.Replace("<HTML>", "");
+                //---newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
+                //---newTempDoc = newTempDoc.Replace("<BODY>  <b> Axtarış şərtləri :<b>", "");
+                //---newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
+                //---newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
 
-                EVHFList.AddRange(StringToListEVHF(newTempDoc));
+                //---EVHFList.AddRange(StringToListEVHF(newTempDoc));
             }
             Process.Start(new ProcessStartInfo(tempFile));
         }
@@ -499,7 +499,7 @@ namespace TaxesGovAzToExcelEVHF
                     }
                 }
             }
-            Console.WriteLine(XToken);
+            //Console.WriteLine(XToken);
             return XToken;
         }
         private static string CopyVoen(string link)
@@ -550,7 +550,7 @@ namespace TaxesGovAzToExcelEVHF
                     }
                 }
             }
-            Console.WriteLine(XToken);
+            //Console.WriteLine(XToken);
             return XToken;
         }
         private static string[] CreateLinkArray (string link, string beginDate, string endDate)
@@ -584,15 +584,16 @@ namespace TaxesGovAzToExcelEVHF
             //Console.WriteLine(days);
 
             string[] linkArray = new string[days];
-            string strDate = "";
+            
             DateTime tempDateTime;
 
             for (int i = 0; i < days; i++)
             {
+                string strDate = "";
                 tempDateTime = beginDateTime.AddDays(i);
-                strDate += tempDateTime.Year.ToString();
-                strDate += tempDateTime.Month.ToString().Length == 1 ? $"0{tempDateTime.Month.ToString().Length}" : $"{tempDateTime.Month.ToString().Length}";
-                strDate += tempDateTime.Day.ToString().Length == 1 ? $"0{tempDateTime.Day.ToString().Length}" : $"{tempDateTime.Day.ToString().Length}";
+                strDate = strDate + tempDateTime.Year.ToString();
+                strDate += tempDateTime.Month.ToString().Length == 1 ? $"0{tempDateTime.Month.ToString()}" : $"{tempDateTime.Month.ToString()}";
+                strDate += tempDateTime.Day.ToString().Length == 1 ? $"0{tempDateTime.Day.ToString()}" : $"{tempDateTime.Day.ToString()}";
 
                 linkArray[i] = @"https://vroom.e-taxes.gov.az/index/index/" +
                     @"printServlet?tkn=" + CopyToken(link) + @"==" +
