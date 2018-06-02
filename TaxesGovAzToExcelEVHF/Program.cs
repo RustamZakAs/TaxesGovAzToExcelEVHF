@@ -132,6 +132,9 @@ namespace TaxesGovAzToExcelEVHF
             //Directory.CreateDirectory(reallyLongDirectory);
             //**********TEST ERROR END**************
 
+            DateTime startDate = new DateTime(); //--Time work inicializing
+
+
             var temp = Path.GetTempFileName();
             var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
             for (int i = 0; i < link.Length; i++)
@@ -146,29 +149,32 @@ namespace TaxesGovAzToExcelEVHF
                         }
                     }
                 }
+
                 catch (Exception e) 
                 {
                     Console.WriteLine(e.Message);
                 }
 
-
-                WebClient wc = new WebClient
+                for (int k = 0; k < link.Length; k++)
                 {
-                    Encoding = Encoding.UTF8
-                };
-                var result = wc.DownloadString(link[0]);
-                //Console.WriteLine(result);
-                // "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE="
-                // Example #2: Write one string to a text file.
-                string text = "A class is the most powerful data type in C#. Like a structure, " +
-                               "a class defines the data and behavior of the data type. ";
-                // WriteAllText creates a file, writes the specified string to the file,
-                // and then closes the file.    You do NOT need to call Flush() or Close().
-                System.IO.File.WriteAllText($@"C:\New folder\text{"0"}.html", result);
+                    WebClient wc = new WebClient
+                    {
+                        Encoding = Encoding.UTF8
+                    };
+                    var result = wc.DownloadString("https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/file-system/how-to-write-to-a-text-file");//link[k]);
+                    //Console.WriteLine(result);
+                    // "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE="
+                    // Example #2: Write one string to a text file.
+                    //string text = "A class is the most powerful data type in C#. Like a structure, " +
+                    //               "a class defines the data and behavior of the data type. ";
+                    // WriteAllText creates a file, writes the specified string to the file,
+                    // and then closes the file.    You do NOT need to call Flush() or Close().
+                    System.IO.File.WriteAllText($@"C:\New folder\text{k}.html", result);
+                }
 
-                doc1.Load($@"C:\New folder\text{"0"}.html");
                 try
                 {
+
                     // Open the text file using a stream reader.
                     //using (StreamReader sr = new StreamReader(link)) //link = "TestFile.txt"
                     //{
@@ -185,13 +191,15 @@ namespace TaxesGovAzToExcelEVHF
                     //    String line = sr.ReadToEnd();
                     //    Console.WriteLine(line);
                     //}
+                    doc1.Load($@"C:\New folder\text{"0"}.html");
                 }
                 catch (Exception e) //******************ERROR LEN************** 260 norm, my link 202
                 {
                     Console.WriteLine("The file could not be read:");
                     Console.WriteLine(e.Message);
                 }
-
+                
+                startDate = DateTime.Now; //--Time work start
                 string tempDoc = doc1.ParsedText;
                 string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
                 newTempDoc = newTempDoc.Replace("Й™", "ə");
@@ -218,6 +226,8 @@ namespace TaxesGovAzToExcelEVHF
 
                 EVHFList.AddRange(StringToListEVHF(newTempDoc));
             }
+            DateTime endDate = DateTime.Now; //--Time work start
+            Console.WriteLine(endDate-startDate);
             Process.Start(new ProcessStartInfo(tempFile));
         }
         public static List<EVHF> StringToListEVHF(string str)
