@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace TaxesGovAzToExcelEVHF
 {
-    public class EVHF
+    public class EVHF : IComparable//, IEnumerator
     {
         public EVHF() {}
         public EVHF(string iO, string voen, string ad, string tip, string veziyyet, string tarix, string seriya, string nomre, string esasQeyd, string elaveQeyd, string eDVsiz, string eDV, string hesab1C, string mVQeyd)
@@ -68,6 +68,8 @@ namespace TaxesGovAzToExcelEVHF
         public string EDV { get; set; }
         public string Hesab1C { get; set; }
         public string MVQeyd { get; set; }
+
+        
 
         public override string ToString()
         {
@@ -149,6 +151,22 @@ namespace TaxesGovAzToExcelEVHF
                     Console.WriteLine(e.Message);
                 }
 
+
+                WebClient wc = new WebClient
+                {
+                    Encoding = Encoding.UTF8
+                };
+                var result = wc.DownloadString(link[0]);
+                //Console.WriteLine(result);
+                // "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE="
+                // Example #2: Write one string to a text file.
+                string text = "A class is the most powerful data type in C#. Like a structure, " +
+                               "a class defines the data and behavior of the data type. ";
+                // WriteAllText creates a file, writes the specified string to the file,
+                // and then closes the file.    You do NOT need to call Flush() or Close().
+                System.IO.File.WriteAllText($@"C:\New folder\text{"0"}.html", result);
+
+                doc1.Load($@"C:\New folder\text{"0"}.html");
                 try
                 {
                     // Open the text file using a stream reader.
@@ -167,7 +185,6 @@ namespace TaxesGovAzToExcelEVHF
                     //    String line = sr.ReadToEnd();
                     //    Console.WriteLine(line);
                     //}
-                    //---doc1.Load(link[i]);
                 }
                 catch (Exception e) //******************ERROR LEN************** 260 norm, my link 202
                 {
@@ -175,31 +192,31 @@ namespace TaxesGovAzToExcelEVHF
                     Console.WriteLine(e.Message);
                 }
 
-                //---string tempDoc = doc1.ParsedText;
-                //---string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
-                //---newTempDoc = newTempDoc.Replace("Й™", "ə");
-                //---newTempDoc = newTempDoc.Replace("Г–", "Ö");
-                //---newTempDoc = newTempDoc.Replace("Г¶", "ö");
-                //---newTempDoc = newTempDoc.Replace("Дћ", "Ğ");
-                //---newTempDoc = newTempDoc.Replace("Дџ", "ğ");
-                //---newTempDoc = newTempDoc.Replace("Д°", "İ");
-                //---newTempDoc = newTempDoc.Replace("Д±", "ı"); 
-                //---newTempDoc = newTempDoc.Replace("Гњ", "Ü");
-                //---newTempDoc = newTempDoc.Replace("Гј", "ü");
-                //---newTempDoc = newTempDoc.Replace("Г‡", "Ç"); 
-                //---newTempDoc = newTempDoc.Replace("Г§", "ç");
-                //---newTempDoc = newTempDoc.Replace("Ећ", "Ş");
-                //---newTempDoc = newTempDoc.Replace("Еџ", "ş");
+                string tempDoc = doc1.ParsedText;
+                string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
+                newTempDoc = newTempDoc.Replace("Й™", "ə");
+                newTempDoc = newTempDoc.Replace("Г–", "Ö");
+                newTempDoc = newTempDoc.Replace("Г¶", "ö");
+                newTempDoc = newTempDoc.Replace("Дћ", "Ğ");
+                newTempDoc = newTempDoc.Replace("Дџ", "ğ");
+                newTempDoc = newTempDoc.Replace("Д°", "İ");
+                newTempDoc = newTempDoc.Replace("Д±", "ı"); 
+                newTempDoc = newTempDoc.Replace("Гњ", "Ü");
+                newTempDoc = newTempDoc.Replace("Гј", "ü");
+                newTempDoc = newTempDoc.Replace("Г‡", "Ç"); 
+                newTempDoc = newTempDoc.Replace("Г§", "ç");
+                newTempDoc = newTempDoc.Replace("Ећ", "Ş");
+                newTempDoc = newTempDoc.Replace("Еџ", "ş");
                 //newTempDoc = newTempDoc.Replace("&nbsp;", "");
 
-                //---newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
-                //---newTempDoc = newTempDoc.Replace("<HTML>", "");
-                //---newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
-                //---newTempDoc = newTempDoc.Replace("<BODY>  <b> Axtarış şərtləri :<b>", "");
-                //---newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
-                //---newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
+                newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
+                newTempDoc = newTempDoc.Replace("<HTML>", "");
+                newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
+                newTempDoc = newTempDoc.Replace("<BODY>  <b> Axtarış şərtləri :<b>", "");
+                newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
+                newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
 
-                //---EVHFList.AddRange(StringToListEVHF(newTempDoc));
+                EVHFList.AddRange(StringToListEVHF(newTempDoc));
             }
             Process.Start(new ProcessStartInfo(tempFile));
         }
@@ -278,7 +295,7 @@ namespace TaxesGovAzToExcelEVHF
                         //    RZEVHF[10],
                         //    RZEVHF[11],
                         //    RZEVHF[12],
-                        //    RZEVHF[13]));//**********ERROR***********
+                        //    RZEVHF[13]));
                         count = 0;
                     }
                 }
@@ -377,6 +394,126 @@ namespace TaxesGovAzToExcelEVHF
             //}
             ds0.Tables.Add(dt0);
             return ds0;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var eVHF = obj as EVHF;
+            if (int.Parse(this.Nomre) > int.Parse(eVHF.Nomre))
+                return 1;
+            else if (int.Parse(this.Nomre) < int.Parse(eVHF.Nomre))
+                return -1;
+            else return 0;
+        }
+
+        //object IEnumerator.Current => throw new NotImplementedException();
+
+        //bool IEnumerator.MoveNext()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //void IEnumerator.Reset()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public static bool operator >(EVHF obj1, EVHF obj2)
+        {
+            return int.Parse(obj1.Nomre) > int.Parse(obj2.Nomre);
+        }
+        public static bool operator <(EVHF obj1, EVHF obj2)
+        {
+            return int.Parse(obj1.Nomre) < int.Parse(obj2.Nomre);
+        }
+        public object this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0:
+                        return IO;
+                    case 1:
+                        return Voen;
+                    case 2:
+                        return Ad;
+                    case 3:
+                        return Tip;
+                    case 4:
+                        return Veziyyet;
+                    case 5:
+                        return Tarix;
+                    case 6:
+                        return Seriya;
+                    case 7:
+                        return Nomre;
+                    case 8:
+                        return EsasQeyd;
+                    case 9:
+                        return ElaveQeyd;
+                    case 10:
+                        return EDVsiz;
+                    case 11:
+                        return EDV;
+                    case 12:
+                        return Hesab1C;
+                    case 13:
+                        return MVQeyd;
+                    default:
+                        return 99;
+                }
+            }
+            set
+            {
+                switch (index)
+                {
+                    case 0:
+                        IO = (string)value;
+                        break;
+                    case 1:
+                        Voen = (string)value;
+                        break;
+                    case 2:
+                        Ad = (string)value;
+                        break;
+                    case 3:
+                        Tip = (string)value;
+                        break;
+                    case 4:
+                        Veziyyet = (string)value;
+                        break;
+                    case 5:
+                        Tarix = (string)value;
+                        break;
+                    case 6:
+                        Seriya = (string)value;
+                        break;
+                    case 7:
+                        Nomre = (string)value;
+                        break;
+                    case 8:
+                        EsasQeyd = (string)value;
+                        break;
+                    case 9:
+                        ElaveQeyd = (string)value;
+                        break;
+                    case 10:
+                        EDVsiz = (string)value;
+                        break;
+                    case 11:
+                        EDV = (string)value;
+                        break;
+                    case 12:
+                        Hesab1C = (string)value;
+                        break;
+                    case 13:
+                        MVQeyd = (string)value;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
     class MainEVHF
