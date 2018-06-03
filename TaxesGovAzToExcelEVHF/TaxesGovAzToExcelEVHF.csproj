@@ -49,8 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreateExcelFile.cs" />
+    <Compile Include="HttpDownloader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RZEncoding.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

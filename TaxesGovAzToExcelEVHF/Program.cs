@@ -113,7 +113,20 @@ namespace TaxesGovAzToExcelEVHF
             */
 
             // From File
-            var doc1 = new HtmlDocument();
+
+            var htmlWeb = new HtmlWeb
+            {
+                OverrideEncoding = Encoding.UTF8
+            };
+
+
+            var htmlDoc = new HtmlDocument();
+
+            //GodLikeHTML.Load(GodLikeClient.OpenRead("http://www.alfa.lt"), Encoding.UTF8);
+
+            //HttpDownloader downloader = new HttpDownloader("http://www.alfa.lt", null, null);
+            //GodLikeHTML.LoadHtml(downloader.GetPage());
+
             //for (int i = 0; i < link.Length; i++)
             //{
             //    Console.WriteLine(link.Length); 
@@ -180,7 +193,8 @@ namespace TaxesGovAzToExcelEVHF
                     //    String line = sr.ReadToEnd();
                     //    Console.WriteLine(line);
                     //}
-                    doc1.Load($@"C:\New folder\text{m}.html");
+                    //htmlDoc.Load($@"C:\New folder\text{m}.html");
+                    htmlDoc = htmlWeb.Load($@"C:\New folder\text{m}.html");
                 }
                 catch (Exception e) 
                 {
@@ -188,30 +202,8 @@ namespace TaxesGovAzToExcelEVHF
                     Console.WriteLine(e.Message);
                 }
                 //startDate = DateTime.Now; //--Time work start
-                string tempDoc = doc1.ParsedText;
-                string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
-                newTempDoc = newTempDoc.Replace("Й™", "ə");
-                newTempDoc = newTempDoc.Replace("Г–", "Ö");
-                newTempDoc = newTempDoc.Replace("Г¶", "ö");
-                newTempDoc = newTempDoc.Replace("Дћ", "Ğ");
-                newTempDoc = newTempDoc.Replace("Дџ", "ğ");
-                newTempDoc = newTempDoc.Replace("Д°", "İ");
-                newTempDoc = newTempDoc.Replace("Д±", "ı"); 
-                newTempDoc = newTempDoc.Replace("Гњ", "Ü");
-                newTempDoc = newTempDoc.Replace("Гј", "ü");
-                newTempDoc = newTempDoc.Replace("Г‡", "Ç"); 
-                newTempDoc = newTempDoc.Replace("Г§", "ç");
-                newTempDoc = newTempDoc.Replace("Ећ", "Ş");
-                newTempDoc = newTempDoc.Replace("Еџ", "ş");
-                //newTempDoc = newTempDoc.Replace("&nbsp;", "");
-                newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
-                newTempDoc = newTempDoc.Replace("<HTML>", "");
-                newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
-                newTempDoc = newTempDoc.Replace("<BODY>  <b> Axtarış şərtləri :<b>", "");
-                newTempDoc = newTempDoc.Replace("<i>Səhifə:Gələnlər, Tarix:", "");
-                newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
-
-                EVHFList.AddRange(StringToListEVHF(newTempDoc));
+                //EVHFList.AddRange(StringToListEVHF(RZEncoding.HTMLToUTF8(htmlDoc.ParsedText)));
+                EVHFList.AddRange(StringToListEVHF(htmlDoc.ParsedText));
                 Console.WriteLine($"File {m} added");
             }
             
