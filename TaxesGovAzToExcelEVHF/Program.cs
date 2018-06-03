@@ -114,26 +114,13 @@ namespace TaxesGovAzToExcelEVHF
 
             // From File
             var doc1 = new HtmlDocument();
-            //< runtime >
-            //< AppContextSwitchOverrides value = "Switch.System.IO.UseLegacyPathHandling=false;Switch.System.IO.BlockLongPaths=false" />
-            //</ runtime >
-            for (int i = 0; i < link.Length; i++)
-            {
-                Console.WriteLine(link.Length); 
-                Console.WriteLine(link[i]);
-            }
-
-            //**********TEST ERROR BEGIN**************
-            //string reallyLongDirectory = @"C:\Test\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            //reallyLongDirectory = reallyLongDirectory + @"\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            //reallyLongDirectory = reallyLongDirectory + @"\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-            //Console.WriteLine($"Creating a directory that is {reallyLongDirectory.Length} characters long");
-            //Directory.CreateDirectory(reallyLongDirectory);
-            //**********TEST ERROR END**************
+            //for (int i = 0; i < link.Length; i++)
+            //{
+            //    Console.WriteLine(link.Length); 
+            //    Console.WriteLine(link[i]);
+            //}
 
             DateTime startDate = new DateTime(); //--Time work inicializing
-
 
             var temp = Path.GetTempFileName();
             var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
@@ -149,33 +136,34 @@ namespace TaxesGovAzToExcelEVHF
                         }
                     }
                 }
-
                 catch (Exception e) 
                 {
                     Console.WriteLine(e.Message);
                 }
+            }
 
-                for (int k = 0; k < link.Length; k++)
+            MainEVHF.CreateDir(@"C:\New folder");
+            for (int k = 0; k < link.Length; k++)
+            {
+                WebClient wc = new WebClient
                 {
-                    WebClient wc = new WebClient
-                    {
-                        Encoding = Encoding.UTF8
-                    };
-                    var result = wc.DownloadString(link[k]);
-                    //Console.WriteLine(result);
-                    // "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE="
-                    // Example #2: Write one string to a text file.
-                    //string text = "A class is the most powerful data type in C#. Like a structure, " +
-                    //               "a class defines the data and behavior of the data type. ";
-                    // WriteAllText creates a file, writes the specified string to the file,
-                    // and then closes the file.    You do NOT need to call Flush() or Close().
-                    MainEVHF.CreateDir(@"C:\New folder");
-                    System.IO.File.WriteAllText($@"C:\New folder\text{k}.html", result);
-                }
+                    Encoding = Encoding.UTF8
+                };
+                var result = wc.DownloadString(link[k]);
+                //Console.WriteLine(result);
+                // "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE="
+                // Example #2: Write one string to a text file.
+                //string text = "A class is the most powerful data type in C#. Like a structure, " +
+                //               "a class defines the data and behavior of the data type. ";
+                // WriteAllText creates a file, writes the specified string to the file,
+                // and then closes the file.    You do NOT need to call Flush() or Close().
+                System.IO.File.WriteAllText($@"C:\New folder\text{k}.html", result);
+            }
 
+            for (int m = 0; m < link.Length; m++)
+            {
                 try
                 {
-
                     // Open the text file using a stream reader.
                     //using (StreamReader sr = new StreamReader(link)) //link = "TestFile.txt"
                     //{
@@ -192,15 +180,14 @@ namespace TaxesGovAzToExcelEVHF
                     //    String line = sr.ReadToEnd();
                     //    Console.WriteLine(line);
                     //}
-                    doc1.Load($@"C:\New folder\text{"0"}.html");
+                    doc1.Load($@"C:\New folder\text{m}.html");
                 }
-                catch (Exception e) //******************ERROR LEN************** 260 norm, my link 202
+                catch (Exception e) 
                 {
                     Console.WriteLine("The file could not be read:");
                     Console.WriteLine(e.Message);
                 }
-                
-                startDate = DateTime.Now; //--Time work start
+                //startDate = DateTime.Now; //--Time work start
                 string tempDoc = doc1.ParsedText;
                 string newTempDoc = tempDoc.Replace("ЖЏ", "Ə");
                 newTempDoc = newTempDoc.Replace("Й™", "ə");
@@ -217,7 +204,6 @@ namespace TaxesGovAzToExcelEVHF
                 newTempDoc = newTempDoc.Replace("Ећ", "Ş");
                 newTempDoc = newTempDoc.Replace("Еџ", "ş");
                 //newTempDoc = newTempDoc.Replace("&nbsp;", "");
-
                 newTempDoc = newTempDoc.Replace("<style>#trback{background-color:#dfe8f6;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#trback2{background-color:#DFDFDF;font-family : Tahoma;font-style : normal;font-size : 12px;font-weight : 100;}#head{ font-family : Tahoma;font-style:normal;font-size : 14px;font-weight : 100;font:bold;text-align:center;color : #36428b;background-color:#a9c3ec}#qutu{border-left:1px solid #dfe8f6;border-bottom:1px solid #dfe8f6;border-right:1px solid #dfe8f6;border-top:1px solid #dfe8f6;}</style>", "");
                 newTempDoc = newTempDoc.Replace("<HTML>", "");
                 newTempDoc = newTempDoc.Replace("<HEAD><meta http-equiv=\"Content - Type\" content=\"text / html; charset = utf - 8\" /><TITLE>VHF axtarışının nəticəsi</TITLE></HEAD>", "");
@@ -226,7 +212,9 @@ namespace TaxesGovAzToExcelEVHF
                 newTempDoc = newTempDoc.Replace("<br/>-----\n\n", "");
 
                 EVHFList.AddRange(StringToListEVHF(newTempDoc));
+                Console.WriteLine($"File {m} added");
             }
+            
             DateTime endDate = DateTime.Now; //--Time work start
             Console.WriteLine(endDate-startDate);
             Process.Start(new ProcessStartInfo(tempFile));
@@ -385,7 +373,7 @@ namespace TaxesGovAzToExcelEVHF
 
             foreach (var i in EVHFs)
             {
-                dt0.Rows.Add(new object[] { "I", i.Voen, i.Ad, i.Tip, i.Veziyyet, i.Tarix, i.Seriya, i.Nomre, i.EsasQeyd, i.ElaveQeyd, i.EDVsiz, i.EDV, i.Hesab1C, i.MVQeyd });
+                dt0.Rows.Add(new object[] { MainEVHF.EVHFIO, i.Voen, i.Ad, i.Tip, i.Veziyyet, i.Tarix, i.Seriya, i.Nomre, i.EsasQeyd, i.ElaveQeyd, i.EDVsiz, i.EDV, i.Hesab1C, i.MVQeyd });
             }
             //for (int i = 0; i < EVHFs.Count; i++)
             //{
@@ -559,14 +547,14 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static void MainMenyu ()
         {
-            string link;
+            string insertLink;
             bool tokenExsist = false;
             do
             {
                 Console.Clear();
                 Console.WriteLine("Pleese inser Link");
-                link = Console.ReadLine();
-                if (CopyToken(link).Length > 0) tokenExsist = true;
+                insertLink = Console.ReadLine();
+                if (CopyToken(insertLink).Length > 0) tokenExsist = true;
             } while (!tokenExsist);
             //link = //@"https://vroom.e-taxes.gov.az/index/index/" +
             //    "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE=" +
@@ -583,7 +571,7 @@ namespace TaxesGovAzToExcelEVHF
             EVHFIlkTarix = Console.ReadLine();
             Console.WriteLine("Son tarixi daxil edin: YYYYMMDD");
             EVHFSonTarix = Console.ReadLine();
-            Console.WriteLine($"VOEN: {CopyVoen(link)}");
+            Console.WriteLine($"VOEN: {CopyVoen(insertLink)}");
 
             //link = @"https://vroom.e-taxes.gov.az/index/index/" +
             //        @"printServlet?tkn=" + CopyToken(link) + @"==" +
@@ -597,7 +585,7 @@ namespace TaxesGovAzToExcelEVHF
             //        @"&r=1" +
             //        @"&sv=" + EVHFsVOEN;
             //link = @"C:\text.html";
-            EVHFsLink = link;
+            EVHFsLink = insertLink;
         }
         private static string CopyToken(string link)
         {
@@ -652,7 +640,7 @@ namespace TaxesGovAzToExcelEVHF
         }
         private static string CopyVoen(string link)
         {
-            string XToken = "";
+            string XVoen = "";
             for (int i = 0; i < link.Length; i++)
             {
                 string Xtemp = "";
@@ -668,13 +656,13 @@ namespace TaxesGovAzToExcelEVHF
                             xlen = i + Xtemp.Length + x++;
                             if (xlen >= link.Length) xlen = link.Length - 1;
                             if (link[xlen] == '=' || link[xlen] == '&') break;
-                            if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
+                            if (xlen <= link.Length - 1) XVoen += link[xlen]; else break;
                         } while (true);
                         //XToken = XToken.Remove(XToken.Length - 1, 1);
                     }
                 }
             }
-            if (XToken.Length == 0)
+            if (XVoen.Length == 0)
             {
                 for (int i = 0; i < link.Length; i++)
                 {
@@ -692,7 +680,7 @@ namespace TaxesGovAzToExcelEVHF
                             {
                                 xlen = i + Xtemp.Length + x++;
                                 if (link[xlen] == '=' || link[xlen] == '&') break;
-                                if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
+                                if (xlen <= link.Length - 1) XVoen += link[xlen]; else break;
                             } while (true);
                             //XToken = XToken.Remove(XToken.Length - 1, 1);
                         }
@@ -700,7 +688,7 @@ namespace TaxesGovAzToExcelEVHF
                 }
             }
             //Console.WriteLine(XToken);
-            return XToken;
+            return XVoen;
         }
         private static string[] CreateLinkArray (string link, string beginDate, string endDate)
         {
@@ -755,6 +743,7 @@ namespace TaxesGovAzToExcelEVHF
                     @"&sw=0" +
                     @"&r=1" +
                     @"&sv=" + EVHFsVOEN;
+                //Console.WriteLine(linkArray[i]);
                 //linkArray[i] = $"C:\\text{i}.html";
             }
             return linkArray;
@@ -762,7 +751,7 @@ namespace TaxesGovAzToExcelEVHF
         public static void CreateDir(string path)
         {
             // Specify the directory you want to manipulate.
-            path = @"C:\EVHF files";
+            //path = @"C:\EVHF files";
 
             try
             {
@@ -778,8 +767,8 @@ namespace TaxesGovAzToExcelEVHF
                 Console.WriteLine("The directory was created successfully at {0}.", Directory.GetCreationTime(path));
 
                 // Delete the directory.
-                di.Delete();
-                Console.WriteLine("The directory was deleted successfully.");
+                //di.Delete();
+                //Console.WriteLine("The directory was deleted successfully.");
             }
             catch (Exception e)
             {
