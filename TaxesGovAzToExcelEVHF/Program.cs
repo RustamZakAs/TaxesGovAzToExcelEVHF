@@ -161,7 +161,7 @@ namespace TaxesGovAzToExcelEVHF
                     {
                         Encoding = Encoding.UTF8
                     };
-                    var result = wc.DownloadString("https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/file-system/how-to-write-to-a-text-file");//link[k]);
+                    var result = wc.DownloadString(link[k]);
                     //Console.WriteLine(result);
                     // "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE="
                     // Example #2: Write one string to a text file.
@@ -169,6 +169,7 @@ namespace TaxesGovAzToExcelEVHF
                     //               "a class defines the data and behavior of the data type. ";
                     // WriteAllText creates a file, writes the specified string to the file,
                     // and then closes the file.    You do NOT need to call Flush() or Close().
+                    MainEVHF.CreateDir(@"C:\New folder");
                     System.IO.File.WriteAllText($@"C:\New folder\text{k}.html", result);
                 }
 
@@ -614,7 +615,7 @@ namespace TaxesGovAzToExcelEVHF
                         do
                         {
                             xlen = i + Xtemp.Length + x++;
-                            if (link[xlen] == '=' || link[xlen] == '&') break;
+                            if (/*link[xlen] == '=' || */link[xlen] == '&') break;
                             if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
                         } while (true);
                         //XToken = XToken.Remove(XToken.Length - 1, 1);
@@ -638,7 +639,7 @@ namespace TaxesGovAzToExcelEVHF
                             do
                             {
                                 xlen = i + Xtemp.Length + x++;
-                                if (link[xlen] == '=' || link[xlen] == '&') break;
+                                if (/*link[xlen] == '=' || */link[xlen] == '&') break;
                                 if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
                             } while (true);
                             //XToken = XToken.Remove(XToken.Length - 1, 1);
@@ -665,6 +666,7 @@ namespace TaxesGovAzToExcelEVHF
                         do
                         {
                             xlen = i + Xtemp.Length + x++;
+                            if (xlen >= link.Length) xlen = link.Length - 1;
                             if (link[xlen] == '=' || link[xlen] == '&') break;
                             if (xlen <= link.Length - 1) XToken += link[xlen]; else break;
                         } while (true);
@@ -743,7 +745,7 @@ namespace TaxesGovAzToExcelEVHF
                 strDate += tempDateTime.Day.ToString().Length == 1 ? $"0{tempDateTime.Day.ToString()}" : $"{tempDateTime.Day.ToString()}";
 
                 linkArray[i] = @"https://vroom.e-taxes.gov.az/index/index/" +
-                    @"printServlet?tkn=" + CopyToken(link) + @"==" +
+                    @"printServlet?tkn=" + CopyToken(link) +
                     @"&w=2" +
                     @"&v=" +
                     @"&fd=" + strDate + @"000000" +
@@ -756,6 +758,34 @@ namespace TaxesGovAzToExcelEVHF
                 //linkArray[i] = $"C:\\text{i}.html";
             }
             return linkArray;
+        }
+        public static void CreateDir(string path)
+        {
+            // Specify the directory you want to manipulate.
+            path = @"C:\EVHF files";
+
+            try
+            {
+                // Determine whether the directory exists.
+                if (Directory.Exists(path))
+                {
+                    Console.WriteLine("That path exists already.");
+                    return;
+                }
+
+                // Try to create the directory.
+                DirectoryInfo di = Directory.CreateDirectory(path);
+                Console.WriteLine("The directory was created successfully at {0}.", Directory.GetCreationTime(path));
+
+                // Delete the directory.
+                di.Delete();
+                Console.WriteLine("The directory was deleted successfully.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("The process failed: {0}", e.ToString());
+            }
+            finally { }
         }
         public static void Main(string[] args)
         {
