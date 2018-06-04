@@ -228,11 +228,9 @@ namespace TaxesGovAzToExcelEVHF
         {
             DateTime beginDateTime = SQLStrToDate(beginDate);
 
-            DateTime endDateTime   = SQLStrToDate(endDate);
-
-            TimeSpan difference = endDateTime.Date - beginDateTime.Date;
+            TimeSpan difference = beginDateTime.Date - SQLStrToDate(endDate).Date;
             int days = (int)difference.TotalDays + 1;
-            //Console.WriteLine(days);
+            Console.WriteLine($"{days} Days");
 
             string[] linkArray = new string[days];
             
@@ -264,7 +262,6 @@ namespace TaxesGovAzToExcelEVHF
         {
             // Specify the directory you want to manipulate.
             //path = @"C:\EVHF files";
-
             try
             {
                 // Determine whether the directory exists.
