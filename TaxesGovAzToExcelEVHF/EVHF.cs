@@ -139,7 +139,7 @@ namespace TaxesGovAzToExcelEVHF
                         Encoding = Encoding.UTF8
                     };
                     var result = wc.DownloadString(link[i]);
-                    System.IO.File.WriteAllText($@"C:\New folder\text{i}.html", result);
+                    System.IO.File.WriteAllText($@"C:\New folder\EVHFtext{i}.html", result);
                     Console.WriteLine($"File {i} created");
                 }
                 catch (Exception e)
@@ -171,7 +171,7 @@ namespace TaxesGovAzToExcelEVHF
                     //    Console.WriteLine(line);
                     //}
                     //htmlDoc.Load($@"C:\New folder\text{m}.html");
-                    htmlDoc = htmlWeb.Load($@"C:\New folder\text{m}.html");
+                    htmlDoc = htmlWeb.Load($@"C:\New folder\EVHFtext{m}.html");
                 }
                 catch (Exception e)
                 {
@@ -291,7 +291,6 @@ namespace TaxesGovAzToExcelEVHF
 
             //  Step 1: Create a DataSet, and put some sample data in it
             DataSet ds = ExportToExcel(ref EVHFs);
-
             //  Step 2: Create the Excel file
             try
             {
@@ -302,14 +301,12 @@ namespace TaxesGovAzToExcelEVHF
                 Console.WriteLine("Couldn't create Excel file.\r\nException: " + ex.Message);
                 return;
             }
-
             //  Step 3:  Let's open our new Excel file and shut down this application.
             Process p = new Process
             {
                 StartInfo = new ProcessStartInfo(TargetFilename)
             };
             p.Start();
-
             //this.Close();
         }
         public static DataSet ExportToExcel(ref List<EVHF> EVHFs)

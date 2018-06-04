@@ -16,12 +16,7 @@ namespace TaxesGovAzToExcelEVHF
     class MainEVHF
     {
         //*****************************************
-        private static string myIO;
-        public static string EVHFIO
-        {
-            get { return myIO = "I"; }
-            set { myIO = value; }
-        }
+        public static string EVHFIO { get; set; }
         //*****************************************
         private static string myTextForBegin;
         public static string TextForBegin
@@ -45,6 +40,7 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static void MainMenyu ()
         {
+            EVHFIO = "O";
             string insertLink;
             bool tokenExsist = false;
             do
@@ -232,7 +228,7 @@ namespace TaxesGovAzToExcelEVHF
                     @"&td=" + strDate + @"000000" +
                     @"&s=" +
                     @"&n=" +
-                    @"&sw=0" +
+                    @"&sw=" + (EVHFIO == "I" ? "0" : "1") +
                     @"&r=1" +
                     @"&sv=" + EVHFsVOEN;
             }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TaxesGovAzToExcelEVHF
 {
-    public class EQaime
+    public class EQaime : EVHF
     {
         public EQaime() { }
 
@@ -50,23 +50,9 @@ namespace TaxesGovAzToExcelEVHF
             MVQeyd = mVQeyd;
         }
 
-        public string IO { get; set; }
-        public string Voen { get; set; }
-        public string Ad { get; set; }
-        public string Tip { get; set; }
-        public string Veziyyet { get; set; }
-        public string Tarix { get; set; }
-        public string Seriya { get; set; }
-        public string Nomre { get; set; }
-        public string EsasQeyd { get; set; }
-        public string ElaveQeyd { get; set; }
-        public string EDVsiz { get; set; }
-        public string EDV { get; set; }
         public string EDVcelb { get; set; }
         public string EDVcelbNo { get; set; }
         public string EDVcelb0 { get; set; }
-        public string Hesab1C { get; set; }
-        public string MVQeyd { get; set; }
 
 
     }
