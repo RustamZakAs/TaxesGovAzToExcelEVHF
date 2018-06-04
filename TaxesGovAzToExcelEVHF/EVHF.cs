@@ -243,7 +243,7 @@ namespace TaxesGovAzToExcelEVHF
                         //Xvalue = Xvalue.Replace(".", ",");
                         //RZEVHF.EDV = decimal.Parse(Xvalue);
                         RZEVHF/*[11]*/.EDV = Xvalue;
-                        RZEVHF/*[12]*/.Hesab1C = "531.1";
+                        RZEVHF/*[12]*/.Hesab1C = (MainEVHF.EVHFIO == "I" ? "531.1" : "211.3");
                         RZEVHF/*[13]*/.MVQeyd = "";
                         //Console.WriteLine(RZEVHF.ToString());
                         RZEVHFList.Add(new EVHF(RZEVHF));

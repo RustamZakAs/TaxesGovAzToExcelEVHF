@@ -15,6 +15,7 @@ namespace TaxesGovAzToExcelEVHF
 {
     class MainEVHF
     {
+        public static short EVHForEQaime { get; set; }
         //*****************************************
         public static string EVHFIO { get; set; }
         //*****************************************
@@ -27,12 +28,7 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static string EVHFsLink { get; set; }
         //*****************************************
-        private static string myEVHFsVoen;
-        public static string EVHFsVOEN
-        {
-            get { return myEVHFsVoen = "1501069851"; }
-            set { myEVHFsVoen = value; }
-        }
+        public static string EVHFsVOEN { get; set; }
         //*****************************************
         public static string EVHFIlkTarix { get; set; }
         //*****************************************
@@ -40,7 +36,9 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static void MainMenyu ()
         {
+            EVHForEQaime = 1;
             EVHFIO = "O";
+            EVHFsVOEN = "1501069851";
             string insertLink;
             bool tokenExsist = false;
             do
@@ -60,11 +58,17 @@ namespace TaxesGovAzToExcelEVHF
             //    "&sw=0" +
             //    "&r=1" +
             //    "&sv=1501069851";
+            do
+            {
+                Console.WriteLine("Ilk tarixi daxil edin: YYYYMMDD");
+                EVHFIlkTarix = Console.ReadLine();
+            } while (!ChackDate(EVHFIlkTarix));
+            do
+            {
+                Console.WriteLine("Son tarixi daxil edin: YYYYMMDD");
+                EVHFSonTarix = Console.ReadLine();
+            } while (!ChackDate(EVHFSonTarix));
 
-            Console.WriteLine("Ilk tarixi daxil edin: YYYYMMDD");
-            EVHFIlkTarix = Console.ReadLine();
-            Console.WriteLine("Son tarixi daxil edin: YYYYMMDD");
-            EVHFSonTarix = Console.ReadLine();
             Console.WriteLine($"VOEN: {CopyVoen(insertLink)}");
 
             //link = @"https://vroom.e-taxes.gov.az/index/index/" +
@@ -81,6 +85,7 @@ namespace TaxesGovAzToExcelEVHF
             //link = @"C:\text.html";
             EVHFsLink = insertLink;
         }
+        
         private static string CopyToken(string link)
         {
             string XToken = "";
@@ -178,31 +183,52 @@ namespace TaxesGovAzToExcelEVHF
             }
             return XVoen;
         }
-        private static string[] CreateLinkArray (string link, string beginDate, string endDate)
+        private static bool ChackDate(string str)
+        {
+            if (str.Length == 8)
+            {
+                string str_year = "";
+                str_year += str[0];
+                str_year += str[1];
+                str_year += str[2];
+                str_year += str[3];
+                int year = int.Parse(str_year);
+                if (year <= 2000 || year > (DateTime.Now).Year) return false;
+
+                string str_month = "";
+                str_month += str[4];
+                str_month += str[5];
+                int month = int.Parse(str_month);
+                if (month < 1 || month > 12) return false;
+
+                string str_day = "";
+                str_day += str[6];
+                str_day += str[7];
+                int day = int.Parse(str_day);
+                if (day < 1 || day > DateTime.DaysInMonth(year, month)) return false;
+            }
+            else return false;
+            return true;
+        }
+        private static DateTime SQLStrToDate(string str)
         {
             string xyear = "", xmonth = "", xday = "";
-            xyear += beginDate[0];
-            xyear += beginDate[1];
-            xyear += beginDate[2];
-            xyear += beginDate[3];
-            xmonth += beginDate[4];
-            xmonth += beginDate[5];
-            xday += beginDate[6];
-            xday += beginDate[7];
+            xyear  += str[0];
+            xyear  += str[1];
+            xyear  += str[2];
+            xyear  += str[3];
+            xmonth += str[4];
+            xmonth += str[5];
+            xday   += str[6];
+            xday   += str[7];
+            DateTime date = new DateTime(int.Parse(xyear), int.Parse(xmonth),int.Parse(xday));
+            return date;
+        }
+        private static string[] CreateLinkArray (string link, string beginDate, string endDate)
+        {
+            DateTime beginDateTime = SQLStrToDate(beginDate);
 
-            DateTime beginDateTime = new DateTime(int.Parse(xyear), int.Parse(xmonth), int.Parse(xday));
-
-            xyear = ""; xmonth = ""; xday = "";
-            xyear += endDate[0];
-            xyear += endDate[1];
-            xyear += endDate[2];
-            xyear += endDate[3];
-            xmonth += endDate[4];
-            xmonth += endDate[5];
-            xday += endDate[6];
-            xday += endDate[7];
-
-            DateTime endDateTime = new DateTime(int.Parse(xyear), int.Parse(xmonth), int.Parse(xday));
+            DateTime endDateTime   = SQLStrToDate(endDate);
 
             TimeSpan difference = endDateTime.Date - beginDateTime.Date;
             int days = (int)difference.TotalDays + 1;
@@ -223,11 +249,11 @@ namespace TaxesGovAzToExcelEVHF
                 linkArray[i] = @"https://vroom.e-taxes.gov.az/index/index/" +
                     @"printServlet?tkn=" + CopyToken(link) +
                     @"&w=2" +
-                    @"&v=" +
+                    @"&v="  +
                     @"&fd=" + strDate + @"000000" +
                     @"&td=" + strDate + @"000000" +
-                    @"&s=" +
-                    @"&n=" +
+                    @"&s="  +
+                    @"&n="  +
                     @"&sw=" + (EVHFIO == "I" ? "0" : "1") +
                     @"&r=1" +
                     @"&sv=" + EVHFsVOEN;
