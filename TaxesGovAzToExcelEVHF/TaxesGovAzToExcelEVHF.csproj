@@ -54,6 +54,7 @@
     <Compile Include="HttpDownloader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RZComboBox.cs" />
     <Compile Include="RZEncoding.cs" />
   </ItemGroup>
   <ItemGroup>

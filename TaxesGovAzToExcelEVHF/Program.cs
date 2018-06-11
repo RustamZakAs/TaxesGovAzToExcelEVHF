@@ -13,9 +13,9 @@ using System.Xml;
 
 namespace TaxesGovAzToExcelEVHF
 {
-    class MainEVHF
+    class MainTaxes
     {
-        public static short EVHForEQaime { get; set; }
+        public static short DocumentType { get; set; }
         //*****************************************
         public static string EVHFIO { get; set; }
         //*****************************************
@@ -36,8 +36,7 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static void MainMenyu ()
         {
-            EVHForEQaime = 1;
-            EVHFIO = "O";
+            
             EVHFsVOEN = "1501069851";
             string insertLink;
             bool tokenExsist = false;
@@ -58,6 +57,12 @@ namespace TaxesGovAzToExcelEVHF
             //    "&sw=0" +
             //    "&r=1" +
             //    "&sv=1501069851";
+            Console.WriteLine("Sened növünü seçin: ");
+            DocumentType = 1; //1 - EVHF   2 - E-Qaimə
+
+            Console.Write("\nHereket növünü seçin: ");
+            EVHFIO = ChangeEVHFIO(Console.CursorLeft,Console.CursorTop);
+
             do
             {
                 Console.WriteLine("Ilk tarixi daxil edin: YYYYMMDD");
@@ -85,7 +90,94 @@ namespace TaxesGovAzToExcelEVHF
             //link = @"C:\text.html";
             EVHFsLink = insertLink;
         }
-        
+        private static string ChangeEVHFIO(int left, int top)
+        {
+            ConsoleKeyInfo cki;
+            int m_ind = 0;
+            int m_count = 2;
+            var m_list = new string[m_count];
+            m_list[0] = "Gelenler      ";
+            m_list[1] = "Gönderdiklerim";
+            Console.SetCursorPosition(left, top);
+            Console.WriteLine(m_list[0]);
+            do
+            {
+                Console.SetCursorPosition(left, top);
+                Console.WriteLine(m_list[m_ind]);
+
+                cki = Console.ReadKey();
+                if (cki.Key == ConsoleKey.DownArrow)
+                {
+                    m_ind += 1;
+                    if (m_ind >= m_count)
+                    {
+                        m_ind = m_count - 1;
+                    }
+                }
+                if (cki.Key == ConsoleKey.UpArrow)
+                {
+                    m_ind -= 1;
+                    if (m_ind <= 0)
+                    {
+                        m_ind = 0;
+                    }
+                }
+                if (cki.Key == ConsoleKey.Enter)
+                {
+                    switch (m_ind)
+                    {
+                        case 0:
+                            return "I";
+                        case 1:
+                            return "O";
+                    }
+                }
+            } while (true);
+        }
+        private static string ChangeDocType(int left, int top)
+        {
+            ConsoleKeyInfo cki;
+            int m_ind = 0;
+            int m_count = 2;
+            var m_list = new string[m_count];
+            m_list[0] = "Elektron Vergi Hesab Fakturalar";
+            m_list[1] = "Elektron Qaimeler              ";
+            Console.SetCursorPosition(left, top);
+            Console.WriteLine(m_list[0]);
+            do
+            {
+                Console.SetCursorPosition(left, top);
+                Console.WriteLine(m_list[m_ind]);
+
+                cki = Console.ReadKey();
+                if (cki.Key == ConsoleKey.DownArrow)
+                {
+                    m_ind += 1;
+                    if (m_ind >= m_count)
+                    {
+                        m_ind = m_count - 1;
+                    }
+                }
+                if (cki.Key == ConsoleKey.UpArrow)
+                {
+                    m_ind -= 1;
+                    if (m_ind <= 0)
+                    {
+                        m_ind = 0;
+                    }
+                }
+                if (cki.Key == ConsoleKey.Enter)
+                {
+                    switch (m_ind)
+                    {
+                        case 0:
+                            return "I";
+                        case 1:
+                            return "O";
+                    }
+                }
+            } while (true);
+        }
         private static string CopyToken(string link)
         {
             string XToken = "";
@@ -228,7 +320,7 @@ namespace TaxesGovAzToExcelEVHF
         {
             DateTime beginDateTime = SQLStrToDate(beginDate);
 
-            TimeSpan difference = beginDateTime.Date - SQLStrToDate(endDate).Date;
+            TimeSpan difference = SQLStrToDate(endDate).Date - beginDateTime.Date;
             int days = (int)difference.TotalDays + 1;
             Console.WriteLine($"{days} Days");
 
