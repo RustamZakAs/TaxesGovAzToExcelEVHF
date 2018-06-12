@@ -17,7 +17,7 @@ namespace TaxesGovAzToExcelEVHF
     {
         public static short DocType { get; set; }
         //*****************************************
-        public static string EVHFIO { get; set; }
+        public static string TaxesIO { get; set; }
         //*****************************************
         private static string myTextForBegin;
         public static string TextForBegin
@@ -36,32 +36,23 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static void MainMenyu ()
         {
-            
             EVHFsVOEN = "1501069851";
+
+            Console.Write("\nSened növünü seçin: ");
+            DocType = ChangeDocType(Console.CursorLeft, Console.CursorTop); //0 - EVHF   1 - E-Qaimə
+
+            Console.Write("\nHereket növünü seçin: ");
+            TaxesIO = ChangeEVHFIO(Console.CursorLeft, Console.CursorTop);
+
             string insertLink;
             bool tokenExsist = false;
             do
             {
-                Console.Clear();
-                Console.WriteLine("Pleese inser Link");
+                //Console.Clear();
+                Console.WriteLine("\nPleese inser Link");
                 insertLink = Console.ReadLine();
                 if (CopyToken(insertLink).Length > 0) tokenExsist = true;
             } while (!tokenExsist);
-            //link = //@"https://vroom.e-taxes.gov.az/index/index/" +
-            //    "printServlet?tkn=MTcxMjU5MDMwMjIxNDMwNzA5ODQsMUhSUkIxWiwxLDE1Mjc1NzcwNDkxMDIsMDA3NDc1MTE=" +
-            //    "&w=2" +
-            //    "&v=" +
-            //    "&fd=20180529000000" +
-            //    "&td=20180529000000&s=" +
-            //    "&n=" +
-            //    "&sw=0" +
-            //    "&r=1" +
-            //    "&sv=1501069851";
-            Console.WriteLine("Sened növünü seçin: ");
-            DocType = ChangeDocType(Console.CursorLeft, Console.CursorTop); //0 - EVHF   1 - E-Qaimə
-
-            Console.Write("\nHereket növünü seçin: ");
-            EVHFIO = ChangeEVHFIO(Console.CursorLeft, Console.CursorTop);
 
             do
             {
@@ -171,9 +162,9 @@ namespace TaxesGovAzToExcelEVHF
                     switch (m_ind)
                     {
                         case 0:
-                            return 0;
+                            return 0; //EVHF
                         case 1:
-                            return 1;
+                            return 1; //E-Qaimə
                     }
                 }
             } while (true);
@@ -238,14 +229,18 @@ namespace TaxesGovAzToExcelEVHF
                     Xtemp += link[i + 1];
                     if (Xtemp == "v=")
                     {
-                        int x = 0, xlen = 0;
-                        do
+                        for (int t = link.Length - 10; t < link.Length; t++)
                         {
-                            xlen = i + Xtemp.Length + x++;
-                            if (xlen >= link.Length) xlen = link.Length - 1;
-                            if (link[xlen] == '=' || link[xlen] == '&') break;
-                            if (xlen <= link.Length - 1) XVoen += link[xlen]; else break;
-                        } while (true);
+                            XVoen += link[t];
+                        }
+                        //int x = 0, xlen = 0;
+                        //do
+                        //{
+                        //    xlen = i + Xtemp.Length + x++;
+                        //    if (xlen >= link.Length) xlen = link.Length - 1;
+                        //    if (link[xlen] == '=' || link[xlen] == '&') break;
+                        //    if (xlen <= link.Length - 1) XVoen += link[xlen]; else break;
+                        //} while (true);
                     }
                 }
             }
@@ -262,13 +257,17 @@ namespace TaxesGovAzToExcelEVHF
                         Xtemp += link[i + 3];
                         if (Xtemp == "&sv=")
                         {
-                            int x = 0, xlen = 0;
-                            do
+                            for (int t = link.Length - 10; t < link.Length; t++)
                             {
-                                xlen = i + Xtemp.Length + x++;
-                                if (link[xlen] == '=' || link[xlen] == '&') break;
-                                if (xlen <= link.Length - 1) XVoen += link[xlen]; else break;
-                            } while (true);
+                                XVoen += link[t];
+                            }
+                            //int x = 0, xlen = 0;
+                            //do
+                            //{
+                            //    xlen = i + Xtemp.Length + x++;
+                            //    if (link[xlen] == '=' || link[xlen] == '&') break;
+                            //    if (xlen <= link.Length - 1) XVoen += link[xlen]; else break;
+                            //} while (true);
                         }
                     }
                 }
@@ -318,6 +317,9 @@ namespace TaxesGovAzToExcelEVHF
         }
         private static string[] CreateLinkArray (string link, string beginDate, string endDate)
         {
+            //EVHF    //https://vroom.e-taxes.gov.az/index/index/printServlet?tkn=OTAyMzEyNjI4OTA2OTQ1MTQ1LG51bGwsNCwxNTI4ODI5MjMyNTY2LDAwMTM4OTcx&w=2&v=&fd=20180612000000&td=20180612000000&s=&n=&sw=0&r=1&sv=1501069851
+            //E-Qaimə //http://eqaime.e-taxes.gov.az/index/index/printServlet?tkn=OTAyMzEyNjI4OTA2OTQ1MTQ1LG51bGwsMywxNTI4ODI5MDQ3NzgzLDAwMTM4OTcx&w=2&v=&fd=20180612000000&td=20180612000000&s=&n=&sw=0&r=1&sv=1501069851
+
             DateTime beginDateTime = SQLStrToDate(beginDate);
 
             TimeSpan difference = SQLStrToDate(endDate).Date - beginDateTime.Date;
@@ -328,7 +330,7 @@ namespace TaxesGovAzToExcelEVHF
             
             DateTime tempDateTime;
 
-            string[] sayt = new string[] { "vroom", "eqaime" };
+            string[] sayt = new string[] { "s://vroom", "://eqaime" };
 
             for (int i = 0; i < days; i++)
             {
@@ -338,7 +340,7 @@ namespace TaxesGovAzToExcelEVHF
                 strDate += tempDateTime.Month.ToString().Length == 1 ? $"0{tempDateTime.Month.ToString()}" : $"{tempDateTime.Month.ToString()}";
                 strDate += tempDateTime.Day.ToString().Length == 1 ? $"0{tempDateTime.Day.ToString()}" : $"{tempDateTime.Day.ToString()}";
 
-                linkArray[i] = @"https://"+ sayt[DocType] + ".e-taxes.gov.az/index/index/" +
+                linkArray[i] = @"http"+ sayt[DocType] + ".e-taxes.gov.az/index/index/" +
                     @"printServlet?tkn=" + CopyToken(link) +
                     @"&w=2" +
                     @"&v="  +
@@ -346,7 +348,7 @@ namespace TaxesGovAzToExcelEVHF
                     @"&td=" + strDate + @"000000" +
                     @"&s="  +
                     @"&n="  +
-                    @"&sw=" + (EVHFIO == "I" ? "0" : "1") +
+                    @"&sw=" + (TaxesIO == "I" ? "0" : "1") +
                     @"&r=1" +
                     @"&sv=" + EVHFsVOEN;
             }
@@ -429,8 +431,17 @@ namespace TaxesGovAzToExcelEVHF
             string[] linrArray = CreateLinkArray(EVHFsLink, EVHFIlkTarix, EVHFSonTarix);
 
             List<EVHF> EVHFlist = new List<EVHF>();
-            EVHF.RZLoadEVHF(ref EVHFlist, linrArray);
-            EVHF.CreateExcel(ref EVHFlist);
+            List<EQaime> EQlist = new List<EQaime>();
+            if (DocType == 0)
+            {
+                EVHF.RZLoadFromTaxes(ref EVHFlist, linrArray);
+                EVHF.CreateExcel(ref EVHFlist);
+            }
+            else
+            {
+                EQaime.RZLoadFromTaxes(ref EQlist, linrArray);
+                EQaime.CreateExcel(ref EQlist);
+            }
             Console.ReadKey();
         }
     }

@@ -72,7 +72,7 @@ namespace TaxesGovAzToExcelEVHF
             return $"{IO}-{Voen}-{Ad}-{Tip}-{Veziyyet}-{Tarix}-{Seriya}-{Nomre}-{EsasQeyd}-{ElaveQeyd}-{EDVsiz}-{EDV}-{Hesab1C}-{MVQeyd}";
         }
 
-        public static void RZLoadEVHF(ref List<EVHF> EVHFList, string[] link)
+        public static void RZLoadFromTaxes(ref List<EVHF> EVHFList, string[] link)
         {
             /*
             // The HtmlWeb class is a utility class to get the HTML over HTTP
@@ -119,7 +119,7 @@ namespace TaxesGovAzToExcelEVHF
             var temp = Path.GetTempFileName();
             var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
 
-            MainTaxes.CreateDir(@"C:\New folder");
+            MainTaxes.CreateDir(@"C:\RZUploadingTaxesDocuments");
 
             for (int i = 0; i < link.Length; i++)
             {
@@ -138,7 +138,10 @@ namespace TaxesGovAzToExcelEVHF
                         Encoding = Encoding.UTF8
                     };
                     var result = wc.DownloadString(link[i]);
-                    System.IO.File.WriteAllText($@"C:\New folder\EVHFtext{i}.html", result);
+
+                    string type;
+                    if (MainTaxes.DocType == 0) type = "EVHF("; else type = "E-Qaime(";
+                    System.IO.File.WriteAllText($@"C:\RZUploadingTaxesDocuments\{type}{i}).html", result);
                     Console.WriteLine($"File {i} created");
                 }
                 catch (Exception e)
@@ -170,7 +173,9 @@ namespace TaxesGovAzToExcelEVHF
                     //    Console.WriteLine(line);
                     //}
                     //htmlDoc.Load($@"C:\New folder\text{m}.html");
-                    htmlDoc = htmlWeb.Load($@"C:\New folder\EVHFtext{m}.html");
+                    string type;
+                    if (MainTaxes.DocType == 0) type = "EVHF("; else type = "E-Qaime(";
+                    htmlDoc = htmlWeb.Load($@"C:\RZUploadingTaxesDocuments\{type}{m}).html");
                 }
                 catch (Exception e)
                 {
@@ -220,7 +225,7 @@ namespace TaxesGovAzToExcelEVHF
                         str.Length - 1 : (i + j + k + Xvalue.Length);
                     if (count == 1)
                     {
-                        RZEVHF/*[0]*/.IO = MainTaxes.EVHFIO;
+                        RZEVHF/*[0]*/.IO = MainTaxes.TaxesIO;
                         RZEVHF/*[1]*/.Voen = Xvalue;
                     }
                     if (count == 2) RZEVHF/*[2]*/.Ad = Xvalue;
@@ -242,7 +247,7 @@ namespace TaxesGovAzToExcelEVHF
                         //Xvalue = Xvalue.Replace(".", ",");
                         //RZEVHF.EDV = decimal.Parse(Xvalue);
                         RZEVHF/*[11]*/.EDV = Xvalue;
-                        RZEVHF/*[12]*/.Hesab1C = (MainTaxes.EVHFIO == "I" ? "531.1" : "211.3");
+                        RZEVHF/*[12]*/.Hesab1C = (MainTaxes.TaxesIO == "I" ? "531.1" : "211.3");
                         RZEVHF/*[13]*/.MVQeyd = "";
                         //Console.WriteLine(RZEVHF.ToString());
                         RZEVHFList.Add(new EVHF(RZEVHF));
@@ -335,7 +340,7 @@ namespace TaxesGovAzToExcelEVHF
 
             foreach (var i in EVHFs)
             {
-                dt0.Rows.Add(new object[] { MainTaxes.EVHFIO, i.Voen, i.Ad, i.Tip, i.Veziyyet, i.Tarix, i.Seriya, i.Nomre, i.EsasQeyd, i.ElaveQeyd, i.EDVsiz, i.EDV, i.Hesab1C, i.MVQeyd });
+                dt0.Rows.Add(new object[] { MainTaxes.TaxesIO, i.Voen, i.Ad, i.Tip, i.Veziyyet, i.Tarix, i.Seriya, i.Nomre, i.EsasQeyd, i.ElaveQeyd, i.EDVsiz, i.EDV, i.Hesab1C, i.MVQeyd });
             }
             //for (int i = 0; i < EVHFs.Count; i++)
             //{
