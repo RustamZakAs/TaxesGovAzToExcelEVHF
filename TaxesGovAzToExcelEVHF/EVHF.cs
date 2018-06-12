@@ -116,8 +116,8 @@ namespace TaxesGovAzToExcelEVHF
 
             //DateTime startDate = new DateTime(); //--Time work inicializing
 
-            var temp = Path.GetTempFileName();
-            var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
+            //*** var temp = Path.GetTempFileName();
+            //*** var tempFile = temp.Replace(Path.GetExtension(temp), ".html");
 
             MainTaxes.CreateDir(@"C:\RZUploadingTaxesDocuments");
 
@@ -126,13 +126,13 @@ namespace TaxesGovAzToExcelEVHF
                 try
                 {
                     //Запись в Stream всех ссылок для последующего отображения
-                    using (StreamWriter sw = new StreamWriter(tempFile))
-                    {
-                        for (int j = 0; j < link.Length; j++)
-                        {
-                            sw.Write($"{link[j]}<br>");
-                        }
-                    }
+                    //*** using (StreamWriter sw = new StreamWriter(tempFile))
+                    //*** {
+                    //***     for (int j = 0; j < link.Length; j++)
+                    //***     {
+                    //***         sw.Write($"{link[j]}<br>");
+                    //***     }
+                    //*** }
                     WebClient wc = new WebClient
                     {
                         Encoding = Encoding.UTF8
@@ -190,7 +190,7 @@ namespace TaxesGovAzToExcelEVHF
 
             //DateTime endDate = DateTime.Now; //--Time work start
             //Console.WriteLine(endDate - startDate);  // raznica vo vremeni raboti
-            Process.Start(new ProcessStartInfo(tempFile));
+            //*** Process.Start(new ProcessStartInfo(tempFile));
         }
         public static List<EVHF> StringToListEVHF(string str)
         {

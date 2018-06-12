@@ -36,36 +36,111 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static void MainMenyu ()
         {
+            Console.Clear();
+
             EVHFsVOEN = "1501069851";
 
             Console.Write("\nSened növünü seçin: ");
+            Console.BackgroundColor = ConsoleColor.Blue;
             DocType = ChangeDocType(Console.CursorLeft, Console.CursorTop); //0 - EVHF   1 - E-Qaimə
+            Console.ResetColor();
+
+            Console.WriteLine();
 
             Console.Write("\nHereket növünü seçin: ");
+            Console.BackgroundColor = ConsoleColor.Blue;
             TaxesIO = ChangeEVHFIO(Console.CursorLeft, Console.CursorTop);
+            Console.ResetColor();
+
+            Console.WriteLine();
 
             string insertLink;
             bool tokenExsist = false;
             do
             {
                 //Console.Clear();
-                Console.WriteLine("\nPleese inser Link");
+                Console.WriteLine("\nSaytin linkini daxil edin:");
+                Console.BackgroundColor = ConsoleColor.Blue;
                 insertLink = Console.ReadLine();
+                Console.ResetColor();
                 if (CopyToken(insertLink).Length > 0) tokenExsist = true;
+
+                if (tokenExsist == true)
+                {
+                    if (insertLink.IndexOf("vroom") > -1)
+                    {
+                        if (DocType == 0 && insertLink.IndexOf("vroom") > -1)
+                        {
+
+                        } else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Link sehv daxil edilib!");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                            MainMenyu();
+                        }
+                    }
+                    else if (insertLink.IndexOf("eqaime") > -1)
+                    {
+                        if (DocType == 1 && insertLink.IndexOf("eqaime") > -1)
+                        {
+
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Link sehv daxil edilib!");
+                            Console.ResetColor();
+                            Console.ReadKey();
+                            MainMenyu();
+                        }
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Link sehv daxil edilib!");
+                        Console.ResetColor();
+                        Console.ReadKey();
+                        MainMenyu();
+                    }
+                }
             } while (!tokenExsist);
 
+            bool errorDetector = false;
             do
             {
-                Console.WriteLine("Ilk tarixi daxil edin: YYYYMMDD");
+                if (errorDetector)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine(" Tarix sehv daxil edilib:");
+                    Console.ResetColor();
+                }
+                Console.Write("\nIlk tarixi daxil edin: YYYYMMDD  ");
+                Console.BackgroundColor = ConsoleColor.Blue;
                 EVHFIlkTarix = Console.ReadLine();
+                Console.ResetColor();
+                if (!ChackDate(EVHFIlkTarix)) errorDetector = true;
             } while (!ChackDate(EVHFIlkTarix));
+            errorDetector = false;
             do
             {
-                Console.WriteLine("Son tarixi daxil edin: YYYYMMDD");
+                if (errorDetector)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine(" Tarix sehv daxil edilib:");
+                    Console.ResetColor();
+                }
+                Console.Write("\nSon tarixi daxil edin: YYYYMMDD  ");
+                Console.BackgroundColor = ConsoleColor.Blue;
                 EVHFSonTarix = Console.ReadLine();
+                Console.ResetColor();
+                if (!ChackDate(EVHFIlkTarix)) errorDetector = true;
             } while (!ChackDate(EVHFSonTarix));
 
-            Console.WriteLine($"VOEN: {CopyVoen(insertLink)}");
+            string voen;
+            if (CopyVoen(insertLink).Length == 0) voen = EVHFsVOEN; else voen = CopyVoen(insertLink);
+            Console.WriteLine($"\nVOEN: {voen}");
 
             //link = @"https://vroom.e-taxes.gov.az/index/index/" +
             //        @"printServlet?tkn=" + CopyToken(link) +
@@ -89,12 +164,12 @@ namespace TaxesGovAzToExcelEVHF
             var m_list = new string[m_count];
             m_list[0] = "Gelenler      ";
             m_list[1] = "Gönderdiklerim";
-            Console.SetCursorPosition(left, top);
-            Console.WriteLine(m_list[0]);
+            //Console.SetCursorPosition(left, top);
+            //Console.WriteLine(m_list[0]);
             do
             {
                 Console.SetCursorPosition(left, top);
-                Console.WriteLine(m_list[m_ind]);
+                Console.Write(m_list[m_ind]);
 
                 cki = Console.ReadKey();
                 if (cki.Key == ConsoleKey.DownArrow)
@@ -133,12 +208,12 @@ namespace TaxesGovAzToExcelEVHF
             var m_list = new string[m_count];
             m_list[0] = "Elektron Vergi Hesab Fakturalar";
             m_list[1] = "Elektron Qaimeler              ";
-            Console.SetCursorPosition(left, top);
-            Console.WriteLine(m_list[0]);
+            //Console.SetCursorPosition(left, top);
+            //Console.WriteLine(m_list[0]);
             do
             {
                 Console.SetCursorPosition(left, top);
-                Console.WriteLine(m_list[m_ind]);
+                Console.Write(m_list[m_ind]);
 
                 cki = Console.ReadKey();
                 if (cki.Key == ConsoleKey.DownArrow)
@@ -353,10 +428,13 @@ namespace TaxesGovAzToExcelEVHF
                     @"&sv=" + EVHFsVOEN;
             }
 
+            int xleft = Console.CursorLeft, xtop = Console.CursorTop;
             for (int i = 0; i < linkArray.Length; i++)
             {
                 try
                 {
+                    Console.SetCursorPosition(xleft, xtop);
+                    Console.WriteLine($"{i + 1} link oxunur");
                     if (CheckLink(linkArray[i])) continue;
                     else throw new Exception("Линк не отвечает");
                 }
