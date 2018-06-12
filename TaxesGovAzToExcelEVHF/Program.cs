@@ -15,7 +15,7 @@ namespace TaxesGovAzToExcelEVHF
 {
     class MainTaxes
     {
-        public static short DocumentType { get; set; }
+        public static short DocType { get; set; }
         //*****************************************
         public static string EVHFIO { get; set; }
         //*****************************************
@@ -58,10 +58,10 @@ namespace TaxesGovAzToExcelEVHF
             //    "&r=1" +
             //    "&sv=1501069851";
             Console.WriteLine("Sened növünü seçin: ");
-            DocumentType = 1; //1 - EVHF   2 - E-Qaimə
+            DocType = ChangeDocType(Console.CursorLeft, Console.CursorTop); //0 - EVHF   1 - E-Qaimə
 
             Console.Write("\nHereket növünü seçin: ");
-            EVHFIO = ChangeEVHFIO(Console.CursorLeft,Console.CursorTop);
+            EVHFIO = ChangeEVHFIO(Console.CursorLeft, Console.CursorTop);
 
             do
             {
@@ -134,7 +134,7 @@ namespace TaxesGovAzToExcelEVHF
                 }
             } while (true);
         }
-        private static string ChangeDocType(int left, int top)
+        private static short ChangeDocType(int left, int top)
         {
             ConsoleKeyInfo cki;
             int m_ind = 0;
@@ -171,9 +171,9 @@ namespace TaxesGovAzToExcelEVHF
                     switch (m_ind)
                     {
                         case 0:
-                            return "I";
+                            return 0;
                         case 1:
-                            return "O";
+                            return 1;
                     }
                 }
             } while (true);
@@ -328,6 +328,8 @@ namespace TaxesGovAzToExcelEVHF
             
             DateTime tempDateTime;
 
+            string[] sayt = new string[] { "vroom", "eqaime" };
+
             for (int i = 0; i < days; i++)
             {
                 string strDate = "";
@@ -336,7 +338,7 @@ namespace TaxesGovAzToExcelEVHF
                 strDate += tempDateTime.Month.ToString().Length == 1 ? $"0{tempDateTime.Month.ToString()}" : $"{tempDateTime.Month.ToString()}";
                 strDate += tempDateTime.Day.ToString().Length == 1 ? $"0{tempDateTime.Day.ToString()}" : $"{tempDateTime.Day.ToString()}";
 
-                linkArray[i] = @"https://vroom.e-taxes.gov.az/index/index/" +
+                linkArray[i] = @"https://"+ sayt[DocType] + ".e-taxes.gov.az/index/index/" +
                     @"printServlet?tkn=" + CopyToken(link) +
                     @"&w=2" +
                     @"&v="  +
@@ -348,6 +350,20 @@ namespace TaxesGovAzToExcelEVHF
                     @"&r=1" +
                     @"&sv=" + EVHFsVOEN;
             }
+
+            for (int i = 0; i < linkArray.Length; i++)
+            {
+                try
+                {
+                    if (CheckLink(linkArray[i])) continue;
+                    else throw new Exception("Линк не отвечает");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error link: {e}");
+                }
+            }
+
             return linkArray;
         }
         public static void CreateDir(string path)
@@ -377,6 +393,36 @@ namespace TaxesGovAzToExcelEVHF
             }
             finally { }
         }
+        public static bool CheckLink(string link)
+        {
+            //var htmlWeb = new HtmlWeb
+            //{
+            //    OverrideEncoding = Encoding.UTF8
+            //};
+            //var htmlDoc = new HtmlDocument();
+            Stream stream = new MemoryStream();
+            using (StreamWriter sw = new StreamWriter(stream))
+            {
+                sw.Write(link);                
+            }
+            WebClient wc = new WebClient
+            {
+                Encoding = Encoding.UTF8
+            };
+            string result;
+            try
+            {
+                result = wc.DownloadString(link);
+            }
+            catch (Exception)
+            {
+                return false;
+                throw;
+            }
+            if (result.Length > 0) return true;
+            return false;
+        }
+
         public static void Main(string[] args)
         {
             MainMenyu();

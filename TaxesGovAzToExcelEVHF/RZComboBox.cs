@@ -7,6 +7,14 @@ namespace TaxesGovAzToExcelEVHF
 {
     class RZComboBox
     {
+        public string[] Input { get; set; }
+        public string[] Output { get; set; }
+        public int Left { get; set; }
+        public int Top { get; set; }
+        public int Select_id { get; set; }
+        public int Select_in { get; set; }
+        public int Select_out { get; set; }
+
         public static string Change(string[] view, string[] output,  int left, int top, int view_id)
         {
             try

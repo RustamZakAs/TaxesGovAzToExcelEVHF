@@ -133,7 +133,6 @@ namespace TaxesGovAzToExcelEVHF
                             sw.Write($"{link[j]}<br>");
                         }
                     }
-
                     WebClient wc = new WebClient
                     {
                         Encoding = Encoding.UTF8
