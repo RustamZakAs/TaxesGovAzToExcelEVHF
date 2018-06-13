@@ -19,6 +19,8 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static string TaxesIO { get; set; }
         //*****************************************
+        public static string TaxesVeziyyet { get; set; }
+        //*****************************************
         private static string myTextForBegin;
         public static string TextForBegin
         {
@@ -30,9 +32,9 @@ namespace TaxesGovAzToExcelEVHF
         //*****************************************
         public static string EVHFsVOEN { get; set; }
         //*****************************************
-        public static string EVHFIlkTarix { get; set; }
+        public static string TaxesIlkTarix { get; set; }
         //*****************************************
-        public static string EVHFSonTarix { get; set; }
+        public static string TaxesSonTarix { get; set; }
         //*****************************************
         public static void MainMenyu ()
         {
@@ -53,6 +55,11 @@ namespace TaxesGovAzToExcelEVHF
             Console.ResetColor();
 
             Console.WriteLine();
+
+            Console.WriteLine("\nSenedler: ");
+            Console.BackgroundColor = ConsoleColor.Blue;
+            int veziyyet = ChangeVeziyyet(Console.CursorLeft, Console.CursorTop);
+            Console.ResetColor();
 
             string insertLink;
             bool tokenExsist = false;
@@ -118,10 +125,10 @@ namespace TaxesGovAzToExcelEVHF
                 }
                 Console.Write("\nIlk tarixi daxil edin: YYYYMMDD  ");
                 Console.BackgroundColor = ConsoleColor.Blue;
-                EVHFIlkTarix = Console.ReadLine();
+                TaxesIlkTarix = Console.ReadLine();
                 Console.ResetColor();
-                if (!ChackDate(EVHFIlkTarix)) errorDetector = true;
-            } while (!ChackDate(EVHFIlkTarix));
+                if (!ChackDate(TaxesIlkTarix)) errorDetector = true;
+            } while (!ChackDate(TaxesIlkTarix));
             errorDetector = false;
             do
             {
@@ -133,10 +140,10 @@ namespace TaxesGovAzToExcelEVHF
                 }
                 Console.Write("\nSon tarixi daxil edin: YYYYMMDD  ");
                 Console.BackgroundColor = ConsoleColor.Blue;
-                EVHFSonTarix = Console.ReadLine();
+                TaxesSonTarix = Console.ReadLine();
                 Console.ResetColor();
-                if (!ChackDate(EVHFIlkTarix)) errorDetector = true;
-            } while (!ChackDate(EVHFSonTarix));
+                if (!ChackDate(TaxesIlkTarix)) errorDetector = true;
+            } while (!ChackDate(TaxesSonTarix));
 
             string voen;
             if (CopyVoen(insertLink).Length == 0) voen = EVHFsVOEN; else voen = CopyVoen(insertLink);
@@ -241,6 +248,59 @@ namespace TaxesGovAzToExcelEVHF
                         case 1:
                             return 1; //E-Qaimə
                     }
+                }
+            } while (true);
+        }
+        private static int ChangeVeziyyet(int left, int top)
+        {
+            ConsoleKeyInfo cki;
+            int m_ind = 0;
+            int m_count = 0;
+            string[] m_list = null;
+            if (DocType == 0)
+            {
+                m_count = 3;
+                m_list = new string[m_count];
+                m_list[0] = "Ümumi       ";
+                m_list[1] = "Normal      ";
+                m_list[2] = "Legv edilmiş";
+            }
+            else if (DocType == 1)
+            {
+                m_count = 4;
+                m_list = new string[m_count];
+                m_list[0] = "Umumi       ";
+                m_list[1] = "Normal      ";
+                m_list[2] = "Legv edilmiş";
+                m_list[3] = "EVHF ləğv edilib";
+            }
+            //Console.SetCursorPosition(left, top);
+            //Console.WriteLine(m_list[0]);
+            do
+            {
+                Console.SetCursorPosition(left, top);
+                Console.Write(m_list[m_ind]);
+
+                cki = Console.ReadKey();
+                if (cki.Key == ConsoleKey.DownArrow)
+                {
+                    m_ind += 1;
+                    if (m_ind >= m_count)
+                    {
+                        m_ind = m_count - 1;
+                    }
+                }
+                if (cki.Key == ConsoleKey.UpArrow)
+                {
+                    m_ind -= 1;
+                    if (m_ind <= 0)
+                    {
+                        m_ind = 0;
+                    }
+                }
+                if (cki.Key == ConsoleKey.Enter)
+                {
+                    return m_ind;
                 }
             } while (true);
         }
@@ -506,7 +566,7 @@ namespace TaxesGovAzToExcelEVHF
         public static void Main(string[] args)
         {
             MainMenyu();
-            string[] linrArray = CreateLinkArray(EVHFsLink, EVHFIlkTarix, EVHFSonTarix);
+            string[] linrArray = CreateLinkArray(EVHFsLink, TaxesIlkTarix, TaxesSonTarix);
 
             List<EVHF> EVHFlist = new List<EVHF>();
             List<EQaime> EQlist = new List<EQaime>();
