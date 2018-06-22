@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace TaxesGovAzToExcelEVHF
+namespace TaxesGovAzToExcel
 {
     public class HttpDownloader
     {

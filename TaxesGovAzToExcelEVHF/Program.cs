@@ -11,7 +11,7 @@ using System.Net;
 using System.Text;
 using System.Xml;
 
-namespace TaxesGovAzToExcelEVHF
+namespace TaxesGovAzToExcel
 {
     class MainTaxes
     {

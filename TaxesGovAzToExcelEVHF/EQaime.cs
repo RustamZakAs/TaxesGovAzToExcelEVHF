@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace TaxesGovAzToExcelEVHF
+namespace TaxesGovAzToExcel
 {
     public class EQaime : EVHF
     {
