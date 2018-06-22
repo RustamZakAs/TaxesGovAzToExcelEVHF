@@ -56,10 +56,12 @@ namespace TaxesGovAzToExcel
 
             Console.WriteLine();
 
-            Console.WriteLine("\nSenedler: ");
+            Console.Write("\nSenedler: ");
             Console.BackgroundColor = ConsoleColor.Blue;
             int veziyyet = ChangeVeziyyet(Console.CursorLeft, Console.CursorTop);
             Console.ResetColor();
+
+            Console.WriteLine();
 
             string insertLink;
             bool tokenExsist = false;
