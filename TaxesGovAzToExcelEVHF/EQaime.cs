@@ -250,7 +250,41 @@ namespace TaxesGovAzToExcel
                         RZEQ/*[12]*/.Hesab1C = (MainTaxes.TaxesIO == "I" ? "531.1" : "211.3");
                         RZEQ/*[13]*/.MVQeyd = "";
                         //Console.WriteLine(RZEVHF.ToString());
-                        RZEQList.Add(new EQaime(RZEQ));
+
+                        switch (MainTaxes.TaxesVeziyyet)
+                        {
+                            case 1:
+                                if (RZEQ.Tip == "D") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            case 2:
+                                if (RZEQ.Veziyyet == "Ləğv edilib") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            case 4:
+                                if (RZEQ.Veziyyet == "Normal") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            case 5:
+                                if (RZEQ.Veziyyet == "EVHF hazırlanıb") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            case 6:
+                                if (RZEQ.Veziyyet == "Rədd olunub") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            case 7:
+                                if (RZEQ.Veziyyet == "EVHF göndərilib") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            case 8:
+                                if (RZEQ.Veziyyet == "EVHF ləğv olunub") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            case 10:
+                                if (RZEQ.Veziyyet == "Sistem EVHF hazırlayıb") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            case 11:
+                                if (RZEQ.Veziyyet == "Sistem qaiməni ləğv edib") RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                            default:
+                                RZEQList.Add(new EQaime(RZEQ));
+                                break;
+                        }
+
                         //RZEVHFList.Add(new EVHF(RZEVHF[0], 
                         //    RZEVHF[1], 
                         //    RZEVHF[2], 

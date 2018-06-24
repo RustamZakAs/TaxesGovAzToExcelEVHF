@@ -250,7 +250,19 @@ namespace TaxesGovAzToExcel
                         RZEVHF/*[12]*/.Hesab1C = (MainTaxes.TaxesIO == "I" ? "531.1" : "211.3");
                         RZEVHF/*[13]*/.MVQeyd = "";
                         //Console.WriteLine(RZEVHF.ToString());
-                        RZEVHFList.Add(new EVHF(RZEVHF));
+                        if (MainTaxes.TaxesVeziyyet == 1)
+                        {
+                            if (RZEVHF.Veziyyet == "N") RZEVHFList.Add(new EVHF(RZEVHF));
+                        }
+                        else if (MainTaxes.TaxesVeziyyet == 2)
+                        {
+                            if (RZEVHF.Veziyyet == "L") RZEVHFList.Add(new EVHF(RZEVHF));
+                        }
+                        else if (MainTaxes.TaxesVeziyyet == 3)
+                        {
+                            if (RZEVHF.Tip == "D") RZEVHFList.Add(new EVHF(RZEVHF));
+                        }
+                        else RZEVHFList.Add(new EVHF(RZEVHF));
                         //RZEVHFList.Add(new EVHF(RZEVHF[0], 
                         //    RZEVHF[1], 
                         //    RZEVHF[2], 

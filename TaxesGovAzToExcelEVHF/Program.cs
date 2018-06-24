@@ -19,7 +19,7 @@ namespace TaxesGovAzToExcel
         //*****************************************
         public static string TaxesIO { get; set; }
         //*****************************************
-        public static string TaxesVeziyyet { get; set; }
+        public static int TaxesVeziyyet { get; set; }
         //*****************************************
         private static string myTextForBegin;
         public static string TextForBegin
@@ -44,7 +44,7 @@ namespace TaxesGovAzToExcel
 
             Console.Write("\nSened növünü seçin: ");
             Console.BackgroundColor = ConsoleColor.Blue;
-            DocType = ChangeDocType(Console.CursorLeft, Console.CursorTop); //0 - EVHF   1 - E-Qaimə
+            DocType = ChangeDocType(Console.CursorLeft, Console.CursorTop); //0 - EVHF   1 - E-Qaimə   2 - Depozit hesabından çıxrış
             Console.ResetColor();
 
             Console.WriteLine();
@@ -58,7 +58,7 @@ namespace TaxesGovAzToExcel
 
             Console.Write("\nSenedler: ");
             Console.BackgroundColor = ConsoleColor.Blue;
-            int veziyyet = ChangeVeziyyet(Console.CursorLeft, Console.CursorTop);
+            TaxesVeziyyet = ChangeVeziyyet(Console.CursorLeft, Console.CursorTop);
             Console.ResetColor();
 
             Console.WriteLine();
@@ -81,7 +81,8 @@ namespace TaxesGovAzToExcel
                         if (DocType == 0 && insertLink.IndexOf("vroom") > -1)
                         {
 
-                        } else
+                        }
+                        else
                         {
                             Console.BackgroundColor = ConsoleColor.Red;
                             Console.WriteLine("Link sehv daxil edilib!");
@@ -261,20 +262,29 @@ namespace TaxesGovAzToExcel
             string[] m_list = null;
             if (DocType == 0)
             {
-                m_count = 3;
+                m_count = 4;
                 m_list = new string[m_count];
-                m_list[0] = "Ümumi       ";
-                m_list[1] = "Normal      ";
-                m_list[2] = "Legv edilmiş";
+                m_list[0] = "Hamısı          ";
+                m_list[1] = "Normal          ";
+                m_list[2] = "Ləğv olunmuşlar ";
+                m_list[3] = "Dəqiqləşmiş     ";
             }
             else if (DocType == 1)
             {
-                m_count = 4;
+                m_count = 12;
                 m_list = new string[m_count];
-                m_list[0] = "Umumi       ";
-                m_list[1] = "Normal      ";
-                m_list[2] = "Legv edilmiş";
-                m_list[3] = "EVHF ləğv edilib";
+                m_list[0]  = "Umumi                                                     ";
+                m_list[1]  = "Dəqiqləşmiş                                               ";
+                m_list[2]  = "Ləğv edilib              (Qaimə ləğv edilib)              ";
+                m_list[3]  = "                         (Təsdiq gözləyən)                ";
+                m_list[4]  = "Normal                   (Təsdiqlənmiş)                   ";
+                m_list[5]  = "EVHF hazırlanıb          (Faktura hazırlanıb)             ";
+                m_list[6]  = "Rədd olunub              (Rədd olunub)                    ";
+                m_list[7]  = "EVHF göndərilib          (Faktura göndərilib)             ";
+                m_list[8]  = "EVHF ləğv olunub         (Faktura ləğv olunub)            ";
+                m_list[9]  = "                         (Sistem tərəfindən təsdiqlənmiş) ";
+                m_list[10] = "Sistem EVHF hazırlayıb   (Sistem fakturanı hazırlayıb)    ";
+                m_list[11] = "Sistem qaiməni ləğv edib (Sistem qaiməni ləğv edib)       ";
             }
             //Console.SetCursorPosition(left, top);
             //Console.WriteLine(m_list[0]);
