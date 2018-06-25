@@ -15,7 +15,7 @@ namespace TaxesGovAzToExcel
 {
     class MainTaxes
     {
-        public static short DocType { get; set; }
+        public static int DocType { get; set; }
         //*****************************************
         public static string TaxesIO { get; set; }
         //*****************************************
@@ -38,6 +38,8 @@ namespace TaxesGovAzToExcel
         //*****************************************
         public static void MainMenyu ()
         {
+            Console.Title = "Azərbaycan Respublikasının İnternet Vergi İdarəsinin elektron saytından məlumatların alınması";
+
             Console.Clear();
 
             EVHFsVOEN = "1501069851";
@@ -78,11 +80,7 @@ namespace TaxesGovAzToExcel
                 {
                     if (insertLink.IndexOf("vroom") > -1)
                     {
-                        if (DocType == 0 && insertLink.IndexOf("vroom") > -1)
-                        {
-
-                        }
-                        else
+                        if (DocType != 0)
                         {
                             Console.BackgroundColor = ConsoleColor.Red;
                             Console.WriteLine("Link sehv daxil edilib!");
@@ -93,11 +91,7 @@ namespace TaxesGovAzToExcel
                     }
                     else if (insertLink.IndexOf("eqaime") > -1)
                     {
-                        if (DocType == 1 && insertLink.IndexOf("eqaime") > -1)
-                        {
-
-                        }
-                        else
+                        if (DocType != 1)
                         {
                             Console.BackgroundColor = ConsoleColor.Red;
                             Console.WriteLine("Link sehv daxil edilib!");
@@ -210,14 +204,16 @@ namespace TaxesGovAzToExcel
                 }
             } while (true);
         }
-        private static short ChangeDocType(int left, int top)
+        private static int ChangeDocType(int left, int top)
         {
             ConsoleKeyInfo cki;
             int m_ind = 0;
-            int m_count = 2;
+            int m_count = 3;
             var m_list = new string[m_count];
             m_list[0] = "Elektron Vergi Hesab Fakturalar";
             m_list[1] = "Elektron Qaimeler              ";
+            m_list[2] = "Depozit hesabından çıxrış      ";
+            
             //Console.SetCursorPosition(left, top);
             //Console.WriteLine(m_list[0]);
             do
@@ -244,13 +240,16 @@ namespace TaxesGovAzToExcel
                 }
                 if (cki.Key == ConsoleKey.Enter)
                 {
-                    switch (m_ind)
-                    {
-                        case 0:
-                            return 0; //EVHF
-                        case 1:
-                            return 1; //E-Qaimə
-                    }
+                    return m_ind;
+                    //switch (m_ind)
+                    //{
+                    //    case 0:
+                    //        return 0; //EVHF
+                    //    case 1:
+                    //        return 1; //E-Qaimə
+                    //    case 3:
+                    //        return 2; //Depozit
+                    //}
                 }
             } while (true);
         }
