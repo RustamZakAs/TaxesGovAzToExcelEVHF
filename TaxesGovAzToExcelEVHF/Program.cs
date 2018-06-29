@@ -1,15 +1,16 @@
-﻿using ExportToExcel;
-using HtmlAgilityPack;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Xml;
+using System.Net;
+using System.Data;
+using System.Linq;
+using System.Text;
+using ExportToExcel;
+using HtmlAgilityPack;
+using System.Collections;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace TaxesGovAzToExcel
 {
@@ -38,34 +39,41 @@ namespace TaxesGovAzToExcel
         //*****************************************
         public static void MainMenyu ()
         {
-            Console.OutputEncoding = Encoding.UTF8;
-
             Console.Title = "Azərbaycan Respublikasının İnternet Vergi İdarəsinin elektron saytından məlumatların alınması";
+
+            Console.ResetColor();
+            Console.OutputEncoding = Encoding.UTF8;
 
             Console.Clear();
 
             EVHFsVOEN = "1501069851";
 
-            Console.Write("\nSened növünü seçin: ");
+            Console.Write("\nMəlumat növünü seçin: ");
             Console.BackgroundColor = ConsoleColor.Blue;
             DocType = ChangeDocType(Console.CursorLeft, Console.CursorTop); //0 - EVHF   1 - E-Qaimə   2 - Depozit hesabından çıxrış
             Console.ResetColor();
 
             Console.WriteLine();
 
-            Console.Write("\nHereket növünü seçin: ");
-            Console.BackgroundColor = ConsoleColor.Blue;
-            TaxesIO = ChangeEVHFIO(Console.CursorLeft, Console.CursorTop);
-            Console.ResetColor();
+            if (DocType == 0 | DocType == 1 | DocType == 2)
+            {
+                Console.Write("\nHereket növünü seçin: ");
+                Console.BackgroundColor = ConsoleColor.Blue;
+                TaxesIO = ChangeIO(Console.CursorLeft, Console.CursorTop);
+                Console.ResetColor();
 
-            Console.WriteLine();
+                Console.WriteLine();
+            }
 
-            Console.Write("\nSenedler: ");
-            Console.BackgroundColor = ConsoleColor.Blue;
-            TaxesVeziyyet = ChangeVeziyyet(Console.CursorLeft, Console.CursorTop);
-            Console.ResetColor();
+            if (DocType == 0 | DocType == 1)
+            {
+                Console.Write("\nSenedler: ");
+                Console.BackgroundColor = ConsoleColor.Blue;
+                TaxesVeziyyet = ChangeVeziyyet(Console.CursorLeft, Console.CursorTop);
+                Console.ResetColor();
 
-            Console.WriteLine();
+                Console.WriteLine();
+            }
 
             string insertLink;
             bool tokenExsist = false;
@@ -162,14 +170,23 @@ namespace TaxesGovAzToExcel
             //link = @"C:\text.html";
             EVHFsLink = insertLink;
         }
-        private static string ChangeEVHFIO(int left, int top)
+        private static string ChangeIO(int left, int top)
         {
             ConsoleKeyInfo cki;
             int m_ind = 0;
-            int m_count = 2;
+            int m_count = (DocType == 0 ? 2 : DocType == 1 ? 2 : DocType == 2 ? 3 : 1);
             var m_list = new string[m_count];
-            m_list[0] = "Gelenler      ";
-            m_list[1] = "Gönderdiklerim";
+            if (DocType == 0 | DocType == 1)
+            {
+                m_list[0] = "Gelenler      ";
+                m_list[1] = "Gönderdiklerim";
+            }
+            else if (DocType == 2)
+            {
+                m_list[0] = "Ümumi  ";
+                m_list[1] = "Mədaxil";
+                m_list[2] = "Məxaric";
+            }
             //Console.SetCursorPosition(left, top);
             //Console.WriteLine(m_list[0]);
             do
@@ -196,13 +213,29 @@ namespace TaxesGovAzToExcel
                 }
                 if (cki.Key == ConsoleKey.Enter)
                 {
-                    switch (m_ind)
+                    if (DocType == 0 | DocType == 1)
                     {
-                        case 0:
-                            return "I";
-                        case 1:
-                            return "O";
+                        switch (m_ind)
+                        {
+                            case 0:
+                                return "I"; //Input
+                            case 1:
+                                return "O"; //Output
+                        }
                     }
+                    else if (DocType == 2)
+                    {
+                        switch (m_ind)
+                        {
+                            case 0:
+                                return "A"; //All
+                            case 1:
+                                return "I"; //Input
+                            case 2:
+                                return "O"; //Output
+                        }
+                    }
+                        
                 }
             } while (true);
         }
@@ -260,7 +293,7 @@ namespace TaxesGovAzToExcel
         {
             ConsoleKeyInfo cki;
             int m_ind = 0;
-            int m_count = (DocType == 0 ? 4 : DocType == 1 ? 12 : DocType == 2 ? 2 : 1);
+            int m_count = (DocType == 0 ? 4 : DocType == 1 ? 12 : DocType == 2 ? 3 : 1);
             string[] m_list = new string[m_count];
             if (DocType == 0)
             {
@@ -290,10 +323,11 @@ namespace TaxesGovAzToExcel
             }
             else if (DocType == 2)
             {
-                //m_count = 2;
+                //m_count = 3;
                 //m_list = new string[m_count];
-                m_list[0] = "Mədaxil";
-                m_list[1] = "Məxaric";
+                m_list[0] = "Ümumi  ";
+                m_list[1] = "Mədaxil";
+                m_list[2] = "Məxaric";
             }
             else if (DocType == 3)
             {
