@@ -38,6 +38,8 @@ namespace TaxesGovAzToExcel
         //*****************************************
         public static void MainMenyu ()
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
             Console.Title = "Azərbaycan Respublikasının İnternet Vergi İdarəsinin elektron saytından məlumatların alınması";
 
             Console.Clear();
