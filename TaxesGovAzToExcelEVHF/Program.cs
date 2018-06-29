@@ -208,12 +208,13 @@ namespace TaxesGovAzToExcel
         {
             ConsoleKeyInfo cki;
             int m_ind = 0;
-            int m_count = 3;
+            int m_count = 4;
             var m_list = new string[m_count];
-            m_list[0] = "Elektron Vergi Hesab Fakturalar";
-            m_list[1] = "Elektron Qaimeler              ";
-            m_list[2] = "Depozit hesabından çıxrış      ";
-            
+            m_list[0] = "Elektron Vergi Hesab Fakturalar          ";
+            m_list[1] = "Elektron Qaimeler                        ";
+            m_list[2] = "Depozit hesabından çıxarış               ";
+            m_list[3] = "Əvəzləşmə ayı üzrə məlumatın çıxarılması ";
+
             //Console.SetCursorPosition(left, top);
             //Console.WriteLine(m_list[0]);
             do
@@ -257,12 +258,12 @@ namespace TaxesGovAzToExcel
         {
             ConsoleKeyInfo cki;
             int m_ind = 0;
-            int m_count = 0;
-            string[] m_list = null;
+            int m_count = (DocType == 0 ? 4 : DocType == 1 ? 12 : DocType == 2 ? 2 : 1);
+            string[] m_list = new string[m_count];
             if (DocType == 0)
             {
-                m_count = 4;
-                m_list = new string[m_count];
+                //m_count = 4;
+                //m_list = new string[m_count];
                 m_list[0] = "Hamısı          ";
                 m_list[1] = "Normal          ";
                 m_list[2] = "Ləğv olunmuşlar ";
@@ -270,9 +271,9 @@ namespace TaxesGovAzToExcel
             }
             else if (DocType == 1)
             {
-                m_count = 12;
-                m_list = new string[m_count];
-                m_list[0]  = "Umumi                                                     ";
+                //m_count = 12;
+                //m_list = new string[m_count];
+                m_list[0]  = "Ümumi                                                     ";
                 m_list[1]  = "Dəqiqləşmiş                                               ";
                 m_list[2]  = "Ləğv edilib              (Qaimə ləğv edilib)              ";
                 m_list[3]  = "                         (Təsdiq gözləyən)                ";
@@ -284,6 +285,19 @@ namespace TaxesGovAzToExcel
                 m_list[9]  = "                         (Sistem tərəfindən təsdiqlənmiş) ";
                 m_list[10] = "Sistem EVHF hazırlayıb   (Sistem fakturanı hazırlayıb)    ";
                 m_list[11] = "Sistem qaiməni ləğv edib (Sistem qaiməni ləğv edib)       ";
+            }
+            else if (DocType == 2)
+            {
+                //m_count = 2;
+                //m_list = new string[m_count];
+                m_list[0] = "Mədaxil";
+                m_list[1] = "Məxaric";
+            }
+            else if (DocType == 3)
+            {
+                //m_count = 1;
+                //m_list = new string[m_count];
+                m_list[0] = "Ümumi";
             }
             //Console.SetCursorPosition(left, top);
             //Console.WriteLine(m_list[0]);
