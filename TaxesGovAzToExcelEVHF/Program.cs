@@ -1,15 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Xml;
 using System.Net;
-using System.Data;
-using System.Linq;
 using System.Text;
-using ExportToExcel;
-using HtmlAgilityPack;
-using System.Collections;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 
 namespace TaxesGovAzToExcel
@@ -39,19 +31,21 @@ namespace TaxesGovAzToExcel
         //*****************************************
         public static void MainMenyu ()
         {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.Title = "Azərbaycan Respublikasının İnternet Vergi İdarəsinin elektron saytından məlumatların alınması";
-
-            Console.ResetColor();
+            //Console.ResetColor();
             Console.OutputEncoding = Encoding.UTF8;
 
             Console.Clear();
 
             EVHFsVOEN = "1501069851";
 
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.Write("\nMəlumat növünü seçin: ");
             Console.BackgroundColor = ConsoleColor.Blue;
             DocType = ChangeDocType(Console.CursorLeft, Console.CursorTop); //0 - EVHF   1 - E-Qaimə   2 - Depozit hesabından çıxrış
-            Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.Black;
 
             Console.WriteLine();
 
@@ -60,7 +54,7 @@ namespace TaxesGovAzToExcel
                 Console.Write("\nHereket növünü seçin: ");
                 Console.BackgroundColor = ConsoleColor.Blue;
                 TaxesIO = ChangeIO(Console.CursorLeft, Console.CursorTop);
-                Console.ResetColor();
+                Console.BackgroundColor = ConsoleColor.Black;
 
                 Console.WriteLine();
             }
@@ -70,21 +64,22 @@ namespace TaxesGovAzToExcel
                 Console.Write("\nSenedler: ");
                 Console.BackgroundColor = ConsoleColor.Blue;
                 TaxesVeziyyet = ChangeVeziyyet(Console.CursorLeft, Console.CursorTop);
-                Console.ResetColor();
+                Console.BackgroundColor = ConsoleColor.Black;
 
                 Console.WriteLine();
             }
 
             string insertLink;
             bool tokenExsist = false;
+            Console.WriteLine("\nSaytin linkini daxil edin:");
+            int L = Console.CursorLeft, T = Console.CursorTop;
             do
             {
                 //Console.Clear();
-                Console.WriteLine("\nSaytin linkini daxil edin:");
                 Console.BackgroundColor = ConsoleColor.Blue;
                 insertLink = Console.ReadLine();
-                Console.ResetColor();
-                if (CopyToken(insertLink).Length > 0) tokenExsist = true;
+                Console.BackgroundColor = ConsoleColor.Black;
+                if (CopyToken(insertLink).Length > 0) tokenExsist = true; else Console.SetCursorPosition(L, T);
 
                 if (tokenExsist == true)
                 {
@@ -94,7 +89,7 @@ namespace TaxesGovAzToExcel
                         {
                             Console.BackgroundColor = ConsoleColor.Red;
                             Console.WriteLine("Link sehv daxil edilib!");
-                            Console.ResetColor();
+                            Console.BackgroundColor = ConsoleColor.Black;
                             Console.ReadKey();
                             MainMenyu();
                         }
@@ -105,7 +100,7 @@ namespace TaxesGovAzToExcel
                         {
                             Console.BackgroundColor = ConsoleColor.Red;
                             Console.WriteLine("Link sehv daxil edilib!");
-                            Console.ResetColor();
+                            Console.BackgroundColor = ConsoleColor.Black;
                             Console.ReadKey();
                             MainMenyu();
                         }
@@ -114,7 +109,7 @@ namespace TaxesGovAzToExcel
                     {
                         Console.BackgroundColor = ConsoleColor.Red;
                         Console.WriteLine("Link sehv daxil edilib!");
-                        Console.ResetColor();
+                        Console.BackgroundColor = ConsoleColor.Black;
                         Console.ReadKey();
                         MainMenyu();
                     }
@@ -128,12 +123,12 @@ namespace TaxesGovAzToExcel
                 {
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.WriteLine(" Tarix sehv daxil edilib:");
-                    Console.ResetColor();
+                    Console.BackgroundColor = ConsoleColor.Black;
                 }
                 Console.Write("\nIlk tarixi daxil edin: YYYYMMDD  ");
                 Console.BackgroundColor = ConsoleColor.Blue;
                 TaxesIlkTarix = Console.ReadLine();
-                Console.ResetColor();
+                Console.BackgroundColor = ConsoleColor.Black;
                 if (!ChackDate(TaxesIlkTarix)) errorDetector = true;
             } while (!ChackDate(TaxesIlkTarix));
             errorDetector = false;
@@ -143,12 +138,12 @@ namespace TaxesGovAzToExcel
                 {
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.WriteLine(" Tarix sehv daxil edilib:");
-                    Console.ResetColor();
+                    Console.BackgroundColor = ConsoleColor.Black;
                 }
                 Console.Write("\nSon tarixi daxil edin: YYYYMMDD  ");
                 Console.BackgroundColor = ConsoleColor.Blue;
                 TaxesSonTarix = Console.ReadLine();
-                Console.ResetColor();
+                Console.BackgroundColor = ConsoleColor.Black;
                 if (!ChackDate(TaxesIlkTarix)) errorDetector = true;
             } while (!ChackDate(TaxesSonTarix));
 
