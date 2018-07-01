@@ -33,8 +33,8 @@ namespace TaxesGovAzToExcel
         {
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Title = "Azərbaycan Respublikasının İnternet Vergi İdarəsinin elektron saytından məlumatların alınması";
             //Console.ResetColor();
+            Console.Title = "Azərbaycan Respublikasının İnternet Vergi İdarəsinin elektron saytından məlumatların alınması";
             Console.OutputEncoding = Encoding.UTF8;
 
             Console.Clear();
@@ -182,8 +182,7 @@ namespace TaxesGovAzToExcel
                 m_list[1] = "Mədaxil";
                 m_list[2] = "Məxaric";
             }
-            //Console.SetCursorPosition(left, top);
-            //Console.WriteLine(m_list[0]);
+
             do
             {
                 Console.SetCursorPosition(left, top);
@@ -230,7 +229,6 @@ namespace TaxesGovAzToExcel
                                 return "O"; //Output
                         }
                     }
-                        
                 }
             } while (true);
         }
@@ -245,8 +243,6 @@ namespace TaxesGovAzToExcel
             m_list[2] = "Depozit hesabından çıxarış               ";
             m_list[3] = "Əvəzləşmə ayı üzrə məlumatın çıxarılması ";
 
-            //Console.SetCursorPosition(left, top);
-            //Console.WriteLine(m_list[0]);
             do
             {
                 Console.SetCursorPosition(left, top);
