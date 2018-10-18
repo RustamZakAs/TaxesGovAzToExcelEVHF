@@ -49,7 +49,7 @@ namespace TaxesGovAzToExcel
 
             Console.WriteLine();
 
-            if (DocType == 0 | DocType == 1 | DocType == 2)
+            if (DocType == 0 || DocType == 1 || DocType == 2)
             {
                 Console.Write("\nHereket növünü seçin: ");
                 Console.BackgroundColor = ConsoleColor.Blue;
@@ -59,7 +59,7 @@ namespace TaxesGovAzToExcel
                 Console.WriteLine();
             }
 
-            if (DocType == 0 | DocType == 1)
+            if (DocType == 0 || DocType == 1)
             {
                 Console.Write("\nSenedler: ");
                 Console.BackgroundColor = ConsoleColor.Blue;
@@ -79,7 +79,18 @@ namespace TaxesGovAzToExcel
                 Console.BackgroundColor = ConsoleColor.Blue;
                 insertLink = Console.ReadLine();
                 Console.BackgroundColor = ConsoleColor.Black;
-                if (CopyToken(insertLink).Length > 0) tokenExsist = true; else Console.SetCursorPosition(L, T);
+                try
+                {
+                    if (CopyToken(insertLink).Length > 0) tokenExsist = true; else Console.SetCursorPosition(L, T);
+                }
+                catch (Exception)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Link sehv daxil edilib!");
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ReadKey();
+                    MainMenyu();
+                }
 
                 if (tokenExsist == true)
                 {
